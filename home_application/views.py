@@ -15,8 +15,8 @@ def home(request):
     """
     首页:永久跳转到‘执行任务’界面
     """
-    return HttpResponsePermanentRedirect('/execute_mission/')
-    # return render(request, 'home_application/index_home.html')
+    # return HttpResponsePermanentRedirect('/execute_mission/')
+    return render(request, 'home_application/index_home.html')
 
 
 def dev_guide(request):

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>执行任务</title>
+    <!-- 若您需要使用Kendo UI Professional，请联系版权人获得合法的授权或许可。 -->
+    <!-- Bootstrap css -->
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!-- kendo ui css -->
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/kendoui-2015.2.624/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/kendoui-2015.2.624/styles/kendo.default.min.css" rel="stylesheet">
+    <!-- font-awesome -->
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/fontawesome/css/font-awesome.css" rel="stylesheet">
+    <!--蓝鲸提供的公用样式库 -->
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
+    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk_pack.css" rel="stylesheet">
+</head>
+
+<body class="bg-white" data-bg-color="bg-white">
+    <div class="king-page-box">
+        <div class="king-layout1-header">
+            <nav class="">
+                <div style="overflow:hidden; z-index: inherit;" class="navbar king-horizontal-nav1  f14">
+                    <div class="navbar-container">
+                        <ul class="nav navbar-nav pull-left m0">
+                            <li class="active"><a href="javascript:void(0);">执行任务</a></li>
+                            <li><a href="{% url 'home_application:mission_record' %}}">任务记录</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="king-layout2-main mt15" style="width:960px;">
+            <form class="form-vertical p15">
+                <div class="form-group ">
+                    <label>选择业务：</label>
+                    <select class="form-control">
+                        <option value="选择项1">选择项1</option>
+                        <option value="选择项2">选择项2</option>
+                        <option value="选择项3">选择项3</option>
+                        <option value="选择项4">选择项4</option>
+                    </select>
+                </div>
+            </form>
+            <form class="form-vertical p15">
+                <div class="form-group ">
+                    <label>选择脚本：</label>
+                    <select class="form-control">
+                        {% for choice in context %}
+                            <option value="{{choice.name}}">{{ choice.name }}</option>
+{#                            <option value="选择项2">选择项2</option>#}
+{#                            <option value="选择项3">选择项3</option>#}
+{#                            <option value="选择项4">选择项4</option>#}
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+            <HR SIZE=5>
+            <form class="form-horizontal">
+                <div class="form-group clearfix">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <button type="button" class="king-btn mr10  king-success">执行</button>
+                    </div>
+                </div>
+                <HR SIZE=5>
+                <table class="table mb0 pr15 ranger-box2  ">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox"/></th>
+                            <th style="width: 70px;">序号</th>
+                            <th style="width: 15%;">IP</th>
+                            <th style="width: 15%;">操作系统</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th><input type="radio" /></th>
+                            <td style="width: 70px;">1</td>
+                            <td style="width: 15%;">127.0.0.1</td>
+                            <td style="width: 15%;">Windows10</td>
+                            <td>
+                                <button class="btn btn-xs btn-success"> <i class="glyphicon glyphicon-ok"></i> </button>
+                                <button class="btn btn-xs btn-warning"> <i class="glyphicon glyphicon-edit"></i> </button>
+                                <button class="btn btn-xs btn-danger"> <i class="glyphicon glyphicon-remove"></i> </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <template id="header_tpl_15870105343542">
+                    <tr>
+                        <th style="width: 70px;">#index#</th>
+                        <th style="width: 15%;">#name#</th>
+                        <th style="width: 15%;">#position#</th>
+                        <th style="width: 15%;">#date#</th>
+                        <th style="width: 15%;">#type#</th>
+                        <th>操作</th>
+                    </tr>
+                </template>
+                <template id="tpl_15870105343542">
+                    <tr>
+                        <td style="width: 70px;">#index#</td>
+                        <td style="width: 15%;">#name#</td>
+                        <td style="width: 15%;">#position#</td>
+                        <td style="width: 15%;">#date#</td>
+                        <td style="width: 15%;">#type#</td>
+                        <td>
+                            <button class="btn btn-xs btn-success"> <i class="glyphicon glyphicon-ok"></i> </button>
+                            <button class="btn btn-xs btn-warning"> <i class="glyphicon glyphicon-edit"></i> </button>
+                            <button class="btn btn-xs btn-danger"> <i class="glyphicon glyphicon-remove"></i> </button>
+                        </td>
+                    </tr>
+                </template>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

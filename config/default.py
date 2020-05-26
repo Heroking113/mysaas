@@ -23,6 +23,8 @@ from blueapps.conf.default_settings import *  # noqa
 INSTALLED_APPS += (
     'home_application',
     'mako_application',
+    'rest_framework',
+    'corsheaders',
 )
 
 # 这里是默认的中间件，大部分情况下，不需要改动
@@ -50,6 +52,8 @@ INSTALLED_APPS += (
 
 # 自定义中间件
 MIDDLEWARE += (
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 )
 
 # 所有环境的日志级别可以在这里配置
@@ -86,7 +90,7 @@ LOGGING = get_logging_config_dict(locals())
 
 # 初始化管理员列表，列表中的人员将拥有预发布环境和正式环境的管理员权限
 # 注意：请在首次提测和上线前修改，之后的修改将不会生效
-INIT_SUPERUSER = []
+INIT_SUPERUSER = ["1819785416"]
 
 
 # 使用mako模板时，默认打开的过滤器：h(过滤html)
@@ -108,6 +112,12 @@ LANGUAGES = (
     ('en', u'English'),
     ('zh-hans', u'简体中文'),
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 """
 以下为框架代码 请勿修改

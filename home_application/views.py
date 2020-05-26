@@ -52,7 +52,7 @@ def execute_mission(request):
     return Response(data)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def mission_record(request):
     response = {
         'code': 200,

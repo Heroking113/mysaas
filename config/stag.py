@@ -33,10 +33,7 @@ DATABASES.update(
 )
 
 # 测试环境配置
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8088',
-    'http://localhost:8080',
-]
+CORS_ORIGIN_WHITELIST = ["*"]
 
 # 允许跨域使用cookie
 CORS_ALLOW_CREDENTIALS = True

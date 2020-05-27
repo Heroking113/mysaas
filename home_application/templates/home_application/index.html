@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="icon" href="{{ BK_STATIC_URL }}/static/images/favicon.png" type="image/x-icon" />
-        <link rel="shortcut icon" href="{{ BK_STATIC_URL }}/static/images/favicon.png" type="image/x-icon" />
+        <link rel="icon" href="/static/images/favicon.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="/static/images/favicon.png" type="image/x-icon" />
         <meta charset="utf-8">
         <link rel="icon" href="/static/images/favicon.png" type="image/x-icon" />
         <link rel="shortcut icon" href="/static/images/favicon.png" type="image/x-icon" />
@@ -21,23 +21,25 @@
         <title> mysaas_frontend </title>
     </head>
     <body>
+        <h1>11{{ STATIC_URL }}</h1>
         <div id="app"></div>
         <!-- 自己引入的 -->
-        <script type="text/javascript" src="{{ BK_STATIC_URL }}/static/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="{{ BK_STATIC_URL }}/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
-        <script type="text/javascript" src="{{ BK_STATIC_URL }}/static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+        <script type="text/javascript" src="{{ BK_STATIC_URL }}static/js/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="{{ BK_STATIC_URL }}static/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{{ BK_STATIC_URL }}static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+        <script type="text/javascript" src="{{ BK_STATIC_URL }}static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 
-        <script src="{{ BK_STATIC_URL }}/static/lib.bundle.js"></script>
+        <script type="text/javascript" src="{{ BK_STATIC_URL }}static/lib.bundle.js"></script>
         <script>
             window.API_ROOT = "{{ SITE_URL }}"
             window.PROJECT_CONFIG = (function () {
                 const SITE_URL = '{{ SITE_URL }}'
-                const BK_STATIC_URL = '{{ BK_STATIC_URL }}'
+                const STATIC_URL = '{{ STATIC_URL }}'
                 const REMOTE_STATIC_URL = '{{ REMOTE_STATIC_URL }}'
 
                 return {
                     SITE_URL: SITE_URL,
-                    BK_STATIC_URL: BK_STATIC_URL,
+                    STATIC_URL: STATIC_URL,
                     REMOTE_STATIC_URL: REMOTE_STATIC_URL
                 }
             })()

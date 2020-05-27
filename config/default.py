@@ -72,6 +72,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
+TEMPLATES[0]['DIRS'] += (
+    os.path.join(BASE_DIR, 'static', 'dist'),
+)
+
 # CELERY 开关，使用时请改为 True，修改项目目录下的 Procfile 文件，添加以下两行命令：
 # worker: python manage.py celery worker -l info
 # beat: python manage.py celery beat -l info

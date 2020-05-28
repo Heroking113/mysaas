@@ -15,7 +15,7 @@ LOG_LEVEL = 'ERROR'
 STATIC_URL = '/static/'
 
 # 线上环境的静态文件路径
-BK_STATIC_URL = STATIC_URL + 'dist/'
+BK_STATIC_URL = STATIC_URL + 'dist'
 
 # V2
 # import logging

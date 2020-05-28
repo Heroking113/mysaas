@@ -9,7 +9,7 @@ else:
 RUN_MODE = 'STAGING'
 
 # 线上环境的静态文件路径
-BK_STATIC_URL = STATIC_URL + 'dist/'
+BK_STATIC_URL = STATIC_URL + 'dist'
 
 # 正式环境的日志级别可以在这里配置
 # V2

@@ -12,7 +12,7 @@ RUN_MODE = 'DEVELOP'
 STATIC_URL = '/static/'
 
 # 线上环境的静态文件路径
-BK_STATIC_URL = STATIC_URL + 'dist/'
+BK_STATIC_URL = STATIC_URL + 'dist'
 
 # APP静态资源目录url
 # REMOTE_STATIC_URL = '%sremote/' % STATIC_URL

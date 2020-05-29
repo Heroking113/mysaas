@@ -6,6 +6,7 @@
 """
 
 import os
+from config import APP_CODE
 
 # V3判断环境的环境变量为BKPAAS_ENVIRONMENT
 if 'BKPAAS_ENVIRONMENT' in os.environ:
@@ -50,6 +51,12 @@ if ENVIRONMENT == 'dev':
         'x-csrftoken',
         'x-requested-with',
     )
+
+# 站点设置
+if ENVIRONMENT == 'stag':
+    SITE_URL = '/o/%s/' % APP_CODE
+elif ENVIRONMENT == 'prod':
+    SITE_URL = '/t/%s/' % APP_CODE
 
 try:
     _module = __import__(DJANGO_CONF_MODULE, globals(), locals(), ['*'])

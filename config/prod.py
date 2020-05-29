@@ -11,12 +11,6 @@ RUN_MODE = 'PRODUCT'
 # 只对正式环境日志级别进行配置，可以在这里修改
 LOG_LEVEL = 'ERROR'
 
-# APP本地静态资源目录
-STATIC_URL = '/static/'
-
-# 线上环境的静态文件路径
-BK_STATIC_URL = STATIC_URL + 'dist'
-
 # V2
 # import logging
 # logging.getLogger('root').setLevel('INFO')
@@ -39,6 +33,4 @@ DATABASES.update(
         },
     }
 )
-
-
 

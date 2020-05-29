@@ -8,9 +8,6 @@ else:
 # 预发布环境
 RUN_MODE = 'STAGING'
 
-# 线上环境的静态文件路径
-BK_STATIC_URL = STATIC_URL + 'dist'
-
 # 正式环境的日志级别可以在这里配置
 # V2
 # import logging
@@ -38,6 +35,7 @@ DATABASES.update(
 # 测试环境配置
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8088',
+    'http://localhost:8080',
 ]
 
 # 允许跨域使用cookie

@@ -34,3 +34,5 @@ DATABASES.update(
     }
 )
 
+BK_STATIC_URL = STATIC_URL + 'dist/'
+

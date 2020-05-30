@@ -10,6 +10,6 @@ urlpatterns = (
     url(r'^dev-guide/$', views.dev_guide),
     url(r'^contact/$', views.contact),
     url(r'^helloworld/$', views.helloworld),
-    url(r'^execute_mission/$', views.execute_mission, name='execute_mission'),
-    url(r'^mission_record/$', views.mission_record, name='mission_record')
+    url(r'^execute-mission/$', views.execute_mission, name='execute_mission'),
+    url(r'^mission-record/$', views.mission_record, name='mission_record')
 )

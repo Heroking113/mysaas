@@ -17,8 +17,7 @@ def index(request):
     """
     首页:永久跳转到‘执行任务’界面
     """
-    # return HttpResponsePermanentRedirect('/execute_mission/')
-    return render(request, 'index.html')
+    return HttpResponsePermanentRedirect('/execute-mission/')
 
 
 def dev_guide(request):
@@ -42,30 +41,35 @@ def helloworld(request):
     return HttpResponse('Helloworld')
 
 
-@api_view(["POST"])
 def execute_mission(request):
+
     # 调用开发的云API接口
-    # client = get_client_by_request(request)
-    # data = client.cc.search_business()
-    # data = fask_execute_script(client)
+    client = get_client_by_request(request)
+    business_data = client.cc.search_business()
+    host_data = client.cc.search_host()
     script_contents = ScriptSearch.objects.all()
     serializer = ScriptSearchSerializer(script_contents, many=True)
-    data = serializer.data
-    return Response(data)
+    script_data = serializer.data
+    return render(request,
+                  'home_application/execute_mission.html',
+                  {
+                      "business_data": business_data["data"]["info"],
+                      "script_data": script_data,
+                      "host_data": host_data["data"]["info"]
+                  })
 
 
-@api_view(['GET'])
 def mission_record(request):
-    response = {
-        'code': 200,
-        'data': {
-            'first_name': 'hero',
-            'last_name': 'king'
-        }
-    }
-    return JsonResponse(response)
-    # return Response(data)
-    # return render(request, 'home_application/mission_record.html')
+    # response = {
+    #     'code': 200,
+    #     'data': {
+    #         'first_name': 'hero',
+    #         'last_name': 'king'
+    #     }
+    # }
+    # return JsonResponse(response)
+    # # return Response(data)
+    return render(request, 'home_application/mission_record.html')
 
 # GET in
 # wrapper(in) -response

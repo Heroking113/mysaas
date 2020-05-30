@@ -4,6 +4,8 @@ from django.shortcuts import render, HttpResponse, HttpResponsePermanentRedirect
 from django.views.decorators.http import require_http_methods
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from blueapps.patch.settings_open_saas import SITE_URL
 from blueking.component.shortcuts import get_client_by_request
 
 from home_application.models import ScriptSearch
@@ -18,7 +20,7 @@ def index(request):
     """
     首页:永久跳转到‘执行任务’界面
     """
-    return HttpResponsePermanentRedirect('/execute-mission/')
+    return HttpResponsePermanentRedirect(SITE_URL+'/execute-mission/')
 
 
 def dev_guide(request):

@@ -3,7 +3,7 @@ from config import RUN_VER
 if RUN_VER == 'open':
     from blueapps.patch.settings_open_saas import *  # noqa
 else:
-    from blueapps.patch.settings_paas_services import  * # noqa
+    from blueapps.patch.settings_paas_services import *  # noqa
 
 # 预发布环境
 RUN_MODE = 'STAGING'
@@ -35,7 +35,6 @@ DATABASES.update(
 # 测试环境配置
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8088',
-    'http://localhost:8080',
 ]
 
 # 允许跨域使用cookie

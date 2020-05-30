@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, HttpResponsePermanentRedirect
+from django.views.decorators.http import require_http_methods
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from blueking.component.shortcuts import get_client_by_request
@@ -46,7 +47,7 @@ def execute_mission(request):
     # 调用开发的云API接口
     client = get_client_by_request(request)
     business_data = client.cc.search_business()
-    this_host_data = client.cc.search_host({"condition": [{"bk_obj_id": 2}]})
+    this_host_data = client.cc.search_host({"bk_biz_id": 2})
     host_data = client.cc.search_host()
     script_contents = ScriptSearch.objects.all()
     serializer = ScriptSearchSerializer(script_contents, many=True)
@@ -61,20 +62,26 @@ def execute_mission(request):
 
 
 def mission_record(request):
-    # response = {
-    #     'code': 200,
-    #     'data': {
-    #         'first_name': 'hero',
-    #         'last_name': 'king'
-    #     }
-    # }
-    # return JsonResponse(response)
-    # # return Response(data)
     return render(request, 'home_application/mission_record.html')
 
-# GET in
-# wrapper(in) -response
-    # call data = mission_record
-    # response = normalized data
-# wrapper(out)
-# GET(out)
+
+def get_host_info(request):
+    # 调用开发的云API接口
+    client = get_client_by_request(request)
+
+    business_data = client.cc.search_business()
+    business_data = business_data["data"]["info"]
+
+    bk_biz_id = None
+    for business_item in business_data:
+        if business_item["bk_biz_name"] == request.GET.get("business_name", ""):
+            bk_biz_id = business_item["bk_biz_id"]
+            break
+    host_data = client.cc.search_host({"bk_biz_id": bk_biz_id})
+    host_data = host_data["data"]["info"]
+
+    return JsonResponse({
+        "result": True,
+        "code": 0,
+        "host_data": host_data
+    })

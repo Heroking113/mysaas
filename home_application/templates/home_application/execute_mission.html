@@ -39,7 +39,7 @@
             <form class="form-vertical p15">
                 <div class="form-group ">
                     <label>选择业务：</label>
-                    <select class="form-control">
+                    <select class="form-control" id="choose_business">
                         {% for item in business_data %}
                             <option value="{{item.bk_biz_name}}">{{ item.bk_biz_name }}</option>
                         {% endfor %}
@@ -72,7 +72,7 @@
                             <th>操作</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="host_info_list">
                         {% for host_item in host_data %}
                             <tr>
                                 <td style="width: 40%;">{{ host_item.host.bk_host_innerip }}</td>
@@ -87,5 +87,7 @@
             </form>
         </div>
     </div>
+    <script src="../../../static/js/jquery.min.js"></script>
+    <script src="../../../static/js/handler.js"></script>
 </body>
 </html>

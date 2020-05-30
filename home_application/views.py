@@ -47,7 +47,6 @@ def execute_mission(request):
     # 调用开发的云API接口
     client = get_client_by_request(request)
     business_data = client.cc.search_business()
-    this_host_data = client.cc.search_host({"bk_biz_id": 2})
     host_data = client.cc.search_host()
     script_contents = ScriptSearch.objects.all()
     serializer = ScriptSearchSerializer(script_contents, many=True)

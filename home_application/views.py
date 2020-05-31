@@ -87,6 +87,6 @@ def get_host_info(request):
     })
 
 
-def save_script_return(request):
-    client = get_client_by_request(request)
+# def save_script_return(request):
+#     client = get_client_by_request(request)
 

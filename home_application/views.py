@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+
 from django.http import JsonResponse
 from django.shortcuts import render, HttpResponse, HttpResponsePermanentRedirect
 from django.views.decorators.http import require_http_methods
@@ -57,7 +59,8 @@ def execute_mission(request):
                   {
                       "business_data": business_data["data"]["info"],
                       "script_data": script_data,
-                      "host_data": host_data["data"]["info"]
+                      "host_data": host_data["data"]["info"],
+                      "site_url": json.dumps(SITE_URL)
                   })
 
 

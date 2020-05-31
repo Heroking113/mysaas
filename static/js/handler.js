@@ -1,5 +1,6 @@
 $(document).ready(function () {
-    var getUserHostInfoUrl = window.location.protocol+ "//" + window.location.host + "/get-host-info/";
+    var SITE_URL = JSON.parse('{{ site_url|safe }}');
+    var getUserHostInfoUrl = window.location.protocol + "//" + window.location.host + SITE_URL + "/get-host-info/";
     $("#choose_business").change(function () {
         var param = {
             'business_name': $("#choose_business").val()

@@ -22,7 +22,7 @@ def index(request):
     """
     首页:永久跳转到‘执行任务’界面
     """
-    return HttpResponsePermanentRedirect('/execute-mission/')
+    return HttpResponsePermanentRedirect(SITE_URL + '/execute-mission/')
 
 
 def dev_guide(request):
@@ -92,4 +92,6 @@ def get_host_info(request):
 
 # def save_script_return(request):
 #     client = get_client_by_request(request)
+#     # 把bk_biz_id存入数据库
+#     business_data = client.cc.search_business()["data"]["info"]
 

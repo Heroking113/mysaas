@@ -6,20 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>任务记录</title>
-    <!-- 若您需要使用Kendo UI Professional，请联系版权人获得合法的授权或许可。 -->
-    <!-- Bootstrap css -->
-<!--    <link href="bootstrap.min.css" rel="stylesheet" media="screen">-->
     <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet">
-    <!-- kendo ui css -->
-    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/kendoui-2015.2.624/styles/kendo.common.min.css" rel="stylesheet">
-    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/kendoui-2015.2.624/styles/kendo.default.min.css" rel="stylesheet">
-    <!-- font-awesome -->
-    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/fontawesome/css/font-awesome.css" rel="stylesheet">
     <!--蓝鲸提供的公用样式库 -->
     <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
-    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk_pack.css" rel="stylesheet">
-    <!-- 自己引入的样式 -->
-    <link href="{{ STATIC_URL }}css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+    <!-- 日期选择器样式 -->
+    <link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
 </head>
 
 <body class="bg-white" data-bg-color="bg-white">
@@ -76,23 +67,12 @@
                 </div>
             </div>
             <HR SIZE=5>
-            <form action="" class="form-horizontal">
-                <fieldset>
-                    <div class="control-group">
-                        <div class="controls date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
-                        <span class="add-on"><i class="icon-th"></i>选择</span>
-                            <input size="25" type="text" value="" readonly>
-                            <span class="add-on"><i class="icon-remove"></i>清除</span>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
+                <p>日期：<input type="text" id="datepicker"></p>
             <HR SIZE=5>
             <form class="form-horizontal">
                 <table class="table mb0 pr15 ranger-box2  ">
                     <thead>
                         <tr>
-<!--                            <th><input type="checkbox"/></th>-->
                             <th style="width: 12.5%;">业务</th>
                             <th style="width: 12.5%;">用户</th>
                             <th style="width: 12.5%;">任务</th>
@@ -105,61 +85,27 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="width: 12.5%;">业务</td>
-                            <td style="width: 12.5%;">用户</td>
-                            <td style="width: 12.5%;">任务</td>
-                            <td style="width: 12.5%;">操作时间</td>
-                            <td style="width: 12.5%;">机器数</td>
-                            <td style="width: 12.5%;">状态</td>
-                            <td style="width: 12.5%;">参数</td>
-                            <td style="width: 12.5%;">详情</td>
+                            <td style="width: 12.5%;">业务数据</td>
+                            <td style="width: 12.5%;">用户数据</td>
+                            <td style="width: 12.5%;">任务数据</td>
+                            <td style="width: 12.5%;">操作时间数据</td>
+                            <td style="width: 12.5%;">机器数数据</td>
+                            <td style="width: 12.5%;">状态数据</td>
+                            <td style="width: 12.5%;">参数数据</td>
+                            <td style="width: 12.5%;">详情数据</td>
                         </tr>
                     </tbody>
                 </table>
-                <template id="header_tpl_15870105343542">
-                    <tr>
-                        <th style="width: 70px;">#index#</th>
-                        <th style="width: 15%;">#name#</th>
-                        <th style="width: 15%;">#position#</th>
-                        <th style="width: 15%;">#date#</th>
-                        <th style="width: 15%;">#type#</th>
-                        <th>操作</th>
-                    </tr>
-                </template>
-                <template id="tpl_15870105343542">
-                    <tr>
-                        <td style="width: 70px;">#index#</td>
-                        <td style="width: 15%;">#name#</td>
-                        <td style="width: 15%;">#position#</td>
-                        <td style="width: 15%;">#date#</td>
-                        <td style="width: 15%;">#type#</td>
-                        <td>
-                            <button class="btn btn-xs btn-success"> <i class="glyphicon glyphicon-ok"></i> </button>
-                            <button class="btn btn-xs btn-warning"> <i class="glyphicon glyphicon-edit"></i> </button>
-                            <button class="btn btn-xs btn-danger"> <i class="glyphicon glyphicon-remove"></i> </button>
-                        </td>
-                    </tr>
-                </template>
-                <!-- 设置面板End -->
             </form>
         </div>
     </div>
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.8.3.min.js" charset="UTF-8"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
-<script type="text/javascript">
-    $('.form_datetime').datetimepicker({
-        language:  'zh-CN',
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		forceParse: 0,
-        showMeridian: 1
-    });
-</script>
+    <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script>
+        $(function() {
+            $( "#datepicker" ).datepicker()
+        })
+    </script>
 </body>
 
 </html>

@@ -94,7 +94,13 @@
         console.log('testing html debug info protocol:', window.location.protocol)
         console.log('testing html debug info host:', window.location.host)
         console.log('testing html debug info site_url:', SITE_URL)
-        var getUserHostInfoUrl = window.location.protocol + '//' + window.location.host + SITE_URL + 'get-host-info/'
+        var getUserHostInfoUrl = null
+        if (window.location.host === '') {
+            getUserHostInfoUrl = window.location.protocol + '/' + SITE_URL + 'get-host-info/'
+        } else {
+            getUserHostInfoUrl = window.location.protocol + '//' + window.location.host + SITE_URL + 'get-host-info/'
+        }
+
         var param = {
             'business_name': $('#choose_business').val()
         }

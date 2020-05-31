@@ -45,7 +45,6 @@ def helloworld(request):
 
 
 def execute_mission(request):
-
     # 调用开发的云API接口
     client = get_client_by_request(request)
     business_data = client.cc.search_business()

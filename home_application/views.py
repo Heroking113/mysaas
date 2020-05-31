@@ -22,7 +22,7 @@ def index(request):
     """
     首页:永久跳转到‘执行任务’界面
     """
-    return HttpResponsePermanentRedirect(SITE_URL + '/execute-mission/')
+    return HttpResponsePermanentRedirect('/execute-mission/')
 
 
 def dev_guide(request):

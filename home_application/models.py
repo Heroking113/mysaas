@@ -11,4 +11,4 @@ class ScriptSearch(models.Model):
 class FastExecuteScript(models.Model):
     bk_biz_id = models.CharField(max_length=100, default="")
     bk_cloud_id = models.CharField(max_length=100, default="")
-    bk_host_innerip = models.CharField(max_length=100, default="")
+    bk_host_ip = models.CharField(max_length=100, default="")

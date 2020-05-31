@@ -6,20 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>执行任务</title>
-    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css-pro/bk.css" rel="stylesheet">
     <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet">
-    <!-- font-awesome -->
-    <link href="https://magicbox.bk.tencent.com/static_api/v3/assets/fontawesome/css/font-awesome.css" rel="stylesheet">
     <!--蓝鲸提供的公用样式库 -->
     <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk.css" rel="stylesheet">
-    <link href="https://magicbox.bk.tencent.com/static_api/v3/bk/css/bk_pack.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" type="text/css">
 </head>
 
 <body class="bg-white" data-bg-color="bg-white">
     <div class="king-page-box">
         <div class="king-layout1-header">
-            <nav class="">
+            <nav>
                 <div style="overflow:hidden; z-index: inherit;" class="navbar king-horizontal-nav1  f14">
                     <div class="navbar-container">
                         <ul class="nav navbar-nav pull-left m0">
@@ -34,7 +30,7 @@
             <form class="form-vertical p15">
                 <div class="form-group ">
                     <label>选择业务：</label>
-                    <select class="form-control" id="choose_business">
+                    <select class="form-control" id="choose-business">
                         {% for item in business_data %}
                             <option value="{{item.bk_biz_name}}">{{ item.bk_biz_name }}</option>
                         {% endfor %}
@@ -44,20 +40,14 @@
             <form class="form-vertical p15">
                 <div class="form-group ">
                     <label>选择脚本：</label>
-                    <select class="form-control">
+                    <select class="form-control" id="choose-script">
                         {% for item in script_data %}
                             <option value="{{item.name}}">{{ item.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
             </form>
-            <HR SIZE=5>
             <form class="form-horizontal">
-                <div class="form-group clearfix">
-                    <div class="col-sm-9 col-sm-offset-3">
-                        <button type="button" class="king-btn mr10 king-success">执行</button>
-                    </div>
-                </div>
                 <HR SIZE=5>
                 <table class="table table-bordered table-hover">
                     <thead>
@@ -80,24 +70,28 @@
                     </tbody>
                 </table>
             </form>
-        </div>
+            <HR SIZE=5>
+            <div class="form-group clearfix">
+                        <div class="col-sm-9 col-sm-offset-3">
+                            <button type="button" id="execute-script" class="king-btn mr10 king-success">执行</button>
+                        </div>
+                    </div>
+            </div>
     </div>
     <script src='{{ STATIC_URL }}js/jquery.min.js'></script>
     <script type='text/javascript'>
-        $('#choose_business').change(function () {
-            var SITE_URL = JSON.parse('{{ site_url|safe }}')
-            console.log('testing html debug info protocol:', window.location.protocol)
-            console.log('testing html debug info host:', window.location.host)
-            console.log('testing html debug info site_url:', SITE_URL)
+        var SITE_URL = JSON.parse('{{ site_url|safe }}')
+        /* 发送脚本 */
+        $('#choose-business').change(function () {
             var getUserHostInfoUrl = null
             if (window.location.host === '') {
-                getUserHostInfoUrl = window.location.protocol + '/' + SITE_URL + 'get-host-info/'
+                getUserHostInfoUrl = window.location.protocol + '/' + SITE_URL + 'query-host-info/'
             } else {
-                getUserHostInfoUrl = window.location.protocol + '//' + window.location.host + SITE_URL + 'get-host-info/'
+                getUserHostInfoUrl = window.location.protocol + '//' + window.location.host + SITE_URL + 'query-host-info/'
             }
 
             var param = {
-                'business_name': $('#choose_business').val()
+                'business_name': $('#choose-business').val()
             }
             $.ajax({
                     cache: false,
@@ -133,6 +127,8 @@
         var $checkAllTh = $('<th><input type="checkbox" id="checkAll" name="checkAll" /></th>')
         /*将全选/反选复选框添加到表头最前，即增加一列*/
         $thr.prepend($checkAllTh)
+
+        /* 给表格的每一行数据添加复选框 */
         function addTableCheckbox() {
             var $thr = $('table thead tr')
             /*“全选/反选”复选框*/
@@ -165,6 +161,62 @@
             })
         }
         addTableCheckbox()
+
+        /* 点击“执行”按钮，把脚本存入数据库，同时调用接口执行该脚本 */
+        {#$('#execute-script').click(function () {#}
+        {#    let business_name = $('#choose-business').val()#}
+        {#    let script_name = $('#choose-script').val()#}
+        {#    let host_ips = []#}
+        {#    let chosen_hosts = $('#host_info_list').find('input:checked')#}
+        {#    if (chosen_hosts.length === 0) {#}
+        {#        alert('请至少选择一台主机');#}
+        {#        return false;#}
+        {#    }#}
+        {#    $(chosen_hosts).each(function () {#}
+        {#        let this_host = $(this).parent().parent()[0].cells[1]#}
+        {#        host_ips.push($(this_host).text())#}
+        {#    })#}
+        {#    host_ips = host_ips.join(",")#}
+        {#    let params = {#}
+        {#        "business_name": business_name,#}
+        {#        "script_name": script_name,#}
+        {#        "host_ips": host_ips#}
+        {#    }#}
+        {#    let urlQuerySpecificHost = null#}
+        {#    if (window.location.host === '') {#}
+        {#        urlQuerySpecificHost = window.location.protocol + '/' + SITE_URL + 'query-specific-host/'#}
+        {#    } else {#}
+        {#        urlQuerySpecificHost = window.location.protocol + '//' + window.location.host + SITE_URL + 'query-specific-host/'#}
+        {#    }#}
+        {#    $.ajax({#}
+        {#            cache: false,#}
+        {#            type: 'GET',#}
+        {#            data: params,#}
+        {#            dataType: 'json',#}
+        {#            url: urlQuerySpecificHost,#}
+        {#            // 下面的headers和contentType是请求Django后台所必须的配置#}
+        {#            contentType: 'application/x-www-form-urlencoded',#}
+        {#            success: function (resp) {#}
+        {#                console.log(resp)#}
+                        {#var html = ''#}
+                        {#var host_data = resp.host_data#}
+                        {#for (let i=0;i<host_data.length;i++) {#}
+                        {#    html +=#}
+                        {#        `#}
+                        {#        <tr id="host_info_list">#}
+                        {#            <td style="width: 40%;">${host_data[i].host.bk_host_innerip}</td>#}
+                        {#            <td style="width: 40%;">${host_data[i].host.bk_os_name}</td>#}
+                        {#            <td style="width: 20%">#}
+                        {#                <a href="javascript:void(0);" class="bk-text-button">待定</a>#}
+                        {#            </td>#}
+                        {#        </tr>#}
+                        {#        `#}
+                        {#}#}
+                        {#$("#host_info_list").html(html)#}
+                        {#addTableCheckbox()#}
+                    {#}#}
+                {#})#}
+        {#})#}
     </script>
 </body>
 </html>

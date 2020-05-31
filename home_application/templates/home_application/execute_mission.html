@@ -197,9 +197,14 @@
                     // 下面的headers和contentType是请求Django后台所必须的配置
                     contentType: 'application/x-www-form-urlencoded',
                     success: function (resp) {
-                        alert('执行结果:' + resp.result
+                        if (resp.result) {
+                            alert('执行结果:' + resp.result
                             + '\nmessage:' + resp.message
                             + '\noperator:' + resp.data.job_instance.operator)
+                        } else {
+                            alert('执行结果:' + resp.result
+                            + '\nmessage:' + resp.message)
+                        }
                     }
                 })
         })

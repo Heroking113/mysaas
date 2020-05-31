@@ -14,7 +14,7 @@ from celery.task import periodic_task
 from home_application.models import ScriptSearch, FastExecuteScript
 
 
-@task
+@task()
 def execute_script(request, client):
     # 根据前端的business_name获取对应的bk_biz_id
     business_data = client.cc.search_business()["data"]["info"]

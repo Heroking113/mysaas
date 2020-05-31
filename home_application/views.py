@@ -22,8 +22,8 @@ def index(request):
     """
     首页:永久跳转到‘执行任务’界面
     """
-
-    return HttpResponsePermanentRedirect(SITE_URL + '/execute-mission/')
+    return HttpResponsePermanentRedirect('/execute-mission/')
+    # return HttpResponsePermanentRedirect(SITE_URL + '/execute-mission/')
 
 
 def dev_guide(request):
@@ -83,8 +83,7 @@ def get_host_info(request):
         if business_item["bk_biz_name"] == request.GET.get("business_name", ""):
             bk_biz_id = business_item["bk_biz_id"]
             break
-    host_data = client.cc.search_host({"bk_biz_id": bk_biz_id})
-    host_data = host_data["data"]["info"]
+    host_data = client.cc.search_host({"bk_biz_id": bk_biz_id})["data"]["info"]
 
     return JsonResponse({
         "result": True,
@@ -93,8 +92,21 @@ def get_host_info(request):
     })
 
 
-# def save_script_return(request):
-#     client = get_client_by_request(request)
-#     # 把bk_biz_id存入数据库
-#     business_data = client.cc.search_business()["data"]["info"]
+def save_script_return(request):
+    client = get_client_by_request(request)
+    # 根据前端的business_name获取对应的bk_biz_id
+    business_data = client.cc.search_business()["data"]["info"]
+    bk_biz_id = None
+    for business_item in business_data:
+        if business_item["bk_biz_name"] == request.GET.get("business_name", ""):
+            bk_biz_id = business_item["bk_biz_id"]
+            break
+
+    # 根据前端传来的bk_cloud_id
+    host_data = client.cc.search_host({"bk_biz_id": bk_biz_id})["data"]["info"]
+    for host_item in host_data:
+        pass
+        # if host_item["host"]["bk_cloud_id"][0]["bk_inst_id"] == request.GET.get()
+
+
 

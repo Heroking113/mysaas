@@ -163,60 +163,46 @@
         addTableCheckbox()
 
         /* 点击“执行”按钮，把脚本存入数据库，同时调用接口执行该脚本 */
-        {#$('#execute-script').click(function () {#}
-        {#    let business_name = $('#choose-business').val()#}
-        {#    let script_name = $('#choose-script').val()#}
-        {#    let host_ips = []#}
-        {#    let chosen_hosts = $('#host_info_list').find('input:checked')#}
-        {#    if (chosen_hosts.length === 0) {#}
-        {#        alert('请至少选择一台主机');#}
-        {#        return false;#}
-        {#    }#}
-        {#    $(chosen_hosts).each(function () {#}
-        {#        let this_host = $(this).parent().parent()[0].cells[1]#}
-        {#        host_ips.push($(this_host).text())#}
-        {#    })#}
-        {#    host_ips = host_ips.join(",")#}
-        {#    let params = {#}
-        {#        "business_name": business_name,#}
-        {#        "script_name": script_name,#}
-        {#        "host_ips": host_ips#}
-        {#    }#}
-        {#    let urlQuerySpecificHost = null#}
-        {#    if (window.location.host === '') {#}
-        {#        urlQuerySpecificHost = window.location.protocol + '/' + SITE_URL + 'query-specific-host/'#}
-        {#    } else {#}
-        {#        urlQuerySpecificHost = window.location.protocol + '//' + window.location.host + SITE_URL + 'query-specific-host/'#}
-        {#    }#}
-        {#    $.ajax({#}
-        {#            cache: false,#}
-        {#            type: 'GET',#}
-        {#            data: params,#}
-        {#            dataType: 'json',#}
-        {#            url: urlQuerySpecificHost,#}
-        {#            // 下面的headers和contentType是请求Django后台所必须的配置#}
-        {#            contentType: 'application/x-www-form-urlencoded',#}
-        {#            success: function (resp) {#}
-        {#                console.log(resp)#}
-                        {#var html = ''#}
-                        {#var host_data = resp.host_data#}
-                        {#for (let i=0;i<host_data.length;i++) {#}
-                        {#    html +=#}
-                        {#        `#}
-                        {#        <tr id="host_info_list">#}
-                        {#            <td style="width: 40%;">${host_data[i].host.bk_host_innerip}</td>#}
-                        {#            <td style="width: 40%;">${host_data[i].host.bk_os_name}</td>#}
-                        {#            <td style="width: 20%">#}
-                        {#                <a href="javascript:void(0);" class="bk-text-button">待定</a>#}
-                        {#            </td>#}
-                        {#        </tr>#}
-                        {#        `#}
-                        {#}#}
-                        {#$("#host_info_list").html(html)#}
-                        {#addTableCheckbox()#}
-                    {#}#}
-                {#})#}
-        {#})#}
+        $('#execute-script').click(function () {
+            let business_name = $('#choose-business').val()
+            let script_name = $('#choose-script').val()
+            let host_ips = []
+            let chosen_hosts = $('#host_info_list').find('input:checked')
+            if (chosen_hosts.length === 0) {
+                alert('请至少选择一台主机');
+                return false;
+            }
+            $(chosen_hosts).each(function () {
+                let this_host = $(this).parent().parent()[0].cells[1]
+                host_ips.push($(this_host).text())
+            })
+            host_ips = host_ips.join(",")
+            let params = {
+                "business_name": business_name,
+                "script_name": script_name,
+                "host_ips": host_ips
+            }
+            let urlQuerySpecificHost = null
+            if (window.location.host === '') {
+                urlQuerySpecificHost = window.location.protocol + '/' + SITE_URL + 'query-specific-host/'
+            } else {
+                urlQuerySpecificHost = window.location.protocol + '//' + window.location.host + SITE_URL + 'query-specific-host/'
+            }
+            $.ajax({
+                    cache: false,
+                    type: 'GET',
+                    data: params,
+                    dataType: 'json',
+                    url: urlQuerySpecificHost,
+                    // 下面的headers和contentType是请求Django后台所必须的配置
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function (resp) {
+                        alert('执行结果:' + resp.result
+                            + '\nmessage:' + resp.message
+                            + '\noperator:' + resp.data.job_instance.operator)
+                    }
+                })
+        })
     </script>
 </body>
 </html>

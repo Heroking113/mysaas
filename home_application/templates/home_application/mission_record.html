@@ -32,69 +32,67 @@
             <form class="form-vertical p15">
                 <div class="form-group ">
                     <label>业务</label>
-                    <select class="form-control">
-                        <option value="选择项1">选择项1</option>
-                        <option value="选择项2">选择项2</option>
-                        <option value="选择项3">选择项3</option>
-                        <option value="选择项4">选择项4</option>
+                    <select class="form-control" id="chosen_business">
+                        {% for business in context.businesses %}
+                            <option value="{{ business }}">{{ business }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </form>
             <form class="form-vertical p15">
                 <div class="form-group ">
                     <label>用户</label>
-                    <select class="form-control">
-                        <option value="选择项1">选择项1</option>
-                        <option value="选择项2">选择项2</option>
-                        <option value="选择项3">选择项3</option>
-                        <option value="选择项4">选择项4</option>
+                    <select class="form-control" id="chosen_user">
+                        {% for user in context.users %}
+                            <option value="{{ user }}">{{ user }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </form>
             <form class="form-vertical p15">
                 <div class="form-group ">
                     <label>任务</label>
-                    <select class="form-control">
-                        <option value="选择项1">选择项1</option>
-                        <option value="选择项2">选择项2</option>
-                        <option value="选择项3">选择项3</option>
-                        <option value="选择项4">选择项4</option>
+                    <select class="form-control" id="chosen_mission">
+                        {% for mission in context.missions %}
+                            <option value="{{ mission }}">{{ mission }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </form>
+            <HR SIZE=5>
+                <div class="form-group clearfix">
+                    <p>日期：<input type="text" id="datepicker"></p>
+                </div>
+            <HR SIZE=5>
             <div class="form-group clearfix">
                 <div class="col-sm-9 col-sm-offset-3">
-                    <button type="button" class="king-btn mr10  king-success">提交</button>
+                    <button type="button" id="query-record" class="king-btn mr10 king-success">查询</button>
                 </div>
             </div>
-            <HR SIZE=5>
-                <p>日期：<input type="text" id="datepicker"></p>
             <HR SIZE=5>
             <form class="form-horizontal">
                 <table class="table mb0 pr15 ranger-box2  ">
                     <thead>
                         <tr>
-                            <th style="width: 12.5%;">业务</th>
-                            <th style="width: 12.5%;">用户</th>
-                            <th style="width: 12.5%;">任务</th>
-                            <th style="width: 12.5%;">操作时间</th>
-                            <th style="width: 12.5%;">机器数</th>
-                            <th style="width: 12.5%;">状态</th>
-                            <th style="width: 12.5%;">参数</th>
-                            <th style="width: 12.5%;">详情</th>
+                            <th style="width: 16.7%;">业务</th>
+                            <th style="width: 16.7%;">用户</th>
+                            <th style="width: 16.7%;">任务</th>
+                            <th style="width: 16.7%;">操作时间</th>
+                            <th style="width: 16.7%;">机器数</th>
+                            <th style="width: 16.7%;">状态</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td style="width: 12.5%;">业务数据</td>
-                            <td style="width: 12.5%;">用户数据</td>
-                            <td style="width: 12.5%;">任务数据</td>
-                            <td style="width: 12.5%;">操作时间数据</td>
-                            <td style="width: 12.5%;">机器数数据</td>
-                            <td style="width: 12.5%;">状态数据</td>
-                            <td style="width: 12.5%;">参数数据</td>
-                            <td style="width: 12.5%;">详情</td>
-                        </tr>
+                    <tbody id="record-list">
+                        {% for info in context.all_info %}
+                            <tr>
+                                <td>{{ info.business }}</td>
+                                <td>{{ info.operator }}</td>
+                                <td>{{ info.mission }}</td>
+                                <td>{{ info.start_time }}</td>
+                                <td>{{ info.machine_num }}</td>
+                                <td>{{ info.status }}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </form>
@@ -103,8 +101,53 @@
     <script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <script>
-        $(function() {
-            $( "#datepicker" ).datepicker()
+        /* 日期控件 */
+        $("#datepicker").datepicker()
+
+        /* 站点URL */
+        var SITE_URL = JSON.parse('{{ context.site_url|safe }}')
+
+        /* 查询数据并显示 */
+        $('#query-record').click(function () {
+            let urlQueryRecord = null
+            if (window.location.host === '') {
+                urlQueryRecord = window.location.protocol + '/' + SITE_URL + 'query--record/'
+            } else {
+                urlQueryRecord = window.location.protocol + '//' + window.location.host + SITE_URL + 'query-record/'
+            }
+            params = {
+                'business': $('#chosen_business').val(),
+                'operator': $('#chosen_user').val(),
+                'mission': $('#chosen_mission').val(),
+                'start_time': $('#datepicker').val()
+            }
+            $.ajax({
+                    cache: false,
+                    type: 'GET',
+                    dataType: 'json',
+                    data: params,
+                    url: urlQueryRecord,
+                    // 下面的headers和contentType是请求Django后台所必须的配置
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function (resp) {
+                        var html = ''
+                        var data = resp.data
+                        for (let i=0;i<data.length;i++) {
+                            html +=
+                                `
+                                <tr>
+                                    <td>${ data[i].business }</td>
+                                    <td>${ data[i].operator }</td>
+                                    <td>${ data[i].mission }</td>
+                                    <td>${ data[i].start_time }</td>
+                                    <td>${ data[i].machine_num }</td>
+                                    <td>${ data[i].status }</td>
+                                </tr>
+                                `
+                        }
+                        $("#record-list").html(html)
+                    }
+                })
         })
     </script>
 </body>

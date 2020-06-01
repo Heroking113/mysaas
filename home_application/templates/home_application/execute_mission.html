@@ -95,7 +95,7 @@
             }
             $.ajax({
                     cache: false,
-                    type: 'GET',
+                    type: 'POST',
                     data: param,
                     dataType: 'json',
                     url: getUserHostInfoUrl,
@@ -184,13 +184,13 @@
             }
             let urlQuerySpecificHost = null
             if (window.location.host === '') {
-                urlQuerySpecificHost = window.location.protocol + '/' + SITE_URL + 'query-specific-host/'
+                urlQuerySpecificHost = window.location.protocol + '/' + SITE_URL + 'execute-script/'
             } else {
-                urlQuerySpecificHost = window.location.protocol + '//' + window.location.host + SITE_URL + 'query-specific-host/'
+                urlQuerySpecificHost = window.location.protocol + '//' + window.location.host + SITE_URL + 'execute-script/'
             }
             $.ajax({
                     cache: false,
-                    type: 'GET',
+                    type: 'POST',
                     data: params,
                     dataType: 'json',
                     url: urlQuerySpecificHost,
@@ -198,12 +198,9 @@
                     contentType: 'application/x-www-form-urlencoded',
                     success: function (resp) {
                         if (resp.result) {
-                            alert('执行结果:' + resp.result
-                            + '\nmessage:' + resp.message
-                            + '\noperator:' + resp.data.job_instance.operator)
+                            alert("执行成功")
                         } else {
-                            alert('执行结果:' + resp.result
-                            + '\nmessage:' + resp.message)
+                            alert("执行失败")
                         }
                     }
                 })

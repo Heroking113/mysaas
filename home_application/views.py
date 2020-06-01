@@ -84,7 +84,7 @@ def query_host_info(request):
 def execute_script(request):
     client = get_client_by_request(request)
     # 封装参数
-    kwargs = pkg_execute_script_kwargs(client, request)
+    kwargs = pkg_execute_script_kwargs(request, client)
     # 异步执行
     async_handle_execute_script.delay(client, kwargs)
 

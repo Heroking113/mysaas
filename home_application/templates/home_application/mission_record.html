@@ -59,10 +59,10 @@
                     </select>
                 </div>
             </form>
-            <HR SIZE=5>
-                <div class="form-group clearfix">
-                    <p>日期：<input type="text" id="datepicker"></p>
-                </div>
+{#            <HR SIZE=5>#}
+{#                <div class="form-group clearfix">#}
+{#                    <p>日期：<input type="text" id="datepicker"></p>#}
+{#                </div>#}
             <HR SIZE=5>
             <div class="form-group clearfix">
                 <div class="col-sm-9 col-sm-offset-3">
@@ -102,7 +102,7 @@
     <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <script>
         /* 日期控件 */
-        $("#datepicker").datepicker()
+        {#$("#datepicker").datepicker()#}
 
         /* 站点URL */
         var SITE_URL = JSON.parse('{{ context.site_url|safe }}')

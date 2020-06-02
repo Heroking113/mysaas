@@ -130,8 +130,8 @@
                     // 下面的headers和contentType是请求Django后台所必须的配置
                     contentType: 'application/x-www-form-urlencoded',
                     success: function (resp) {
-                        var html = ''
-                        var data = resp.data
+                        let html = ''
+                        let data = resp.data
                         for (let i=0;i<data.length;i++) {
                             html +=
                                 `
@@ -151,5 +151,4 @@
         })
     </script>
 </body>
-
 </html>

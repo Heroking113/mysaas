@@ -26,10 +26,16 @@ from home_application.utils import pkg_execute_script_kwargs, handle_query_recor
 
 def index(request):
     """
-    首页:永久跳转到‘执行任务’界面
+    前后端分离:跳转到前端首页
+    """
+    return render(request, "index.html")
+
+
+    """
+    纯 Django 首页:永久跳转到‘执行任务’界面
     """
     # return HttpResponsePermanentRedirect('/execute-mission/')
-    return HttpResponsePermanentRedirect(SITE_URL + 'execute-mission/')
+    # return HttpResponsePermanentRedirect(SITE_URL + 'execute-mission/')
 
 
 def execute_mission(request):

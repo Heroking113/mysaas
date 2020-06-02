@@ -31,9 +31,9 @@ def index(request):
     return render(request, "index.html")
 
 
-    """
-    纯 Django 首页:永久跳转到‘执行任务’界面
-    """
+    # """
+    # 纯 Django 首页:永久跳转到‘执行任务’界面
+    # """
     # return HttpResponsePermanentRedirect('/execute-mission/')
     # return HttpResponsePermanentRedirect(SITE_URL + 'execute-mission/')
 

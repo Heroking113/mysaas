@@ -10,7 +10,7 @@ RUN_MODE = 'STAGING'
 # APP本地静态资源目录
 # STATIC_URL = '/static/'
 STATIC_URL = '/static/dist/static/'
-BK_STATIC_URL = '/static/dist/static/'
+BK_STATIC_URL = '/static/dist'
 # 正式环境的日志级别可以在这里配置
 # V2
 # import logging

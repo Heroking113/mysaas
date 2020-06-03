@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
+import os
+
 from blueapps.conf.log import get_logging_config_dict
 from blueapps.conf.default_settings import *  # noqa
 
@@ -24,8 +28,7 @@ INSTALLED_APPS += (
     'home_application',
     'mako_application',
     'rest_framework',
-    'corsheaders',
-    'djcelery'
+    'corsheaders'
 )
 
 # 这里是默认的中间件，大部分情况下，不需要改动
@@ -70,20 +73,21 @@ MIDDLEWARE += (
 STATIC_VERSION = '1.0'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static/dist/static')
+    os.path.join(BASE_DIR, 'static')
 ]
 
 # CELERY 开关，使用时请改为 True，修改项目目录下的 Procfile 文件，添加以下两行命令：
 # worker: python manage.py celery worker -l info
 # beat: python manage.py celery beat -l info
 # 不使用时，请修改为 False，并删除项目目录下的 Procfile 文件中 celery 配置
-IS_USE_CELERY = False
+IS_USE_CELERY = True
 
 # CELERY 并发数，默认为 2，可以通过环境变量或者 Procfile 设置
 CELERYD_CONCURRENCY = os.getenv('BK_CELERYD_CONCURRENCY', 2)
 
 # CELERY 配置，申明任务的文件路径，即包含有 @task 装饰器的函数文件
 CELERY_IMPORTS = (
+    "home_application.task"
 )
 
 # load logging settings
@@ -92,6 +96,7 @@ LOGGING = get_logging_config_dict(locals())
 # 初始化管理员列表，列表中的人员将拥有预发布环境和正式环境的管理员权限
 # 注意：请在首次提测和上线前修改，之后的修改将不会生效
 INIT_SUPERUSER = ["admin", "1819785416"]
+# INIT_SUPERUSER = []
 
 
 # 使用mako模板时，默认打开的过滤器：h(过滤html)
@@ -158,3 +163,7 @@ if locals().get('DISABLED_APPS'):
             continue
         locals()[_key] = tuple([_item for _item in locals()[_key]
                                 if not _item.startswith(_app + '.')])
+
+TEMPLATES[0]['DIRS'] += (
+    os.path.join(BASE_DIR, 'static', 'dist'),
+)

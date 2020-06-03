@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
 from config import RUN_VER
+
+
 if RUN_VER == 'open':
     from blueapps.patch.settings_open_saas import *  # noqa
 else:
@@ -33,3 +37,5 @@ DATABASES.update(
         },
     }
 )
+
+BK_STATIC_URL = STATIC_URL + 'dist/'

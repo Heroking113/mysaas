@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
 from config import RUN_VER
+
+
 if RUN_VER == 'open':
     from blueapps.patch.settings_open_saas import *  # noqa
 else:
@@ -7,10 +11,7 @@ else:
 
 # 预发布环境
 RUN_MODE = 'STAGING'
-# APP本地静态资源目录
-# STATIC_URL = '/static/'
-STATIC_URL = '/static/dist/static/'
-BK_STATIC_URL = '/static/dist'
+
 # 正式环境的日志级别可以在这里配置
 # V2
 # import logging
@@ -42,3 +43,5 @@ CORS_ORIGIN_WHITELIST = [
 
 # 允许跨域使用cookie
 CORS_ALLOW_CREDENTIALS = True
+
+BK_STATIC_URL = STATIC_URL + 'dist/'

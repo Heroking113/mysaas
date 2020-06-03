@@ -34,7 +34,7 @@ SECRET_KEY = 'd9664192-989a-424e-b0e6-5acb404fee2d'
 # SaaS运行版本，如非必要请勿修改
 RUN_VER = 'open'
 # 蓝鲸SaaS平台URL，例如 http://paas.bking.com
-BK_URL = 'https://paas-class.bktencent.com/'
+BK_URL = 'https://paas-class.bktencent.com:443/'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(

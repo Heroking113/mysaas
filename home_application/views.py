@@ -25,7 +25,7 @@ from home_application.utils import pkg_execute_script_kwargs, handle_query_recor
 
 
 def to_index(request):
-    return HttpResponsePermanentRedirect('frontend')
+    return HttpResponsePermanentRedirect(SITE_URL+'frontend')
 
 
 def index(request):

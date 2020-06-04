@@ -25,7 +25,10 @@ from home_application.utils import pkg_execute_script_kwargs, handle_query_recor
 
 
 def to_index(request):
-    return HttpResponsePermanentRedirect(SITE_URL+'frontend')
+    # 前后端合并之后，本地开发环境的前端路由重定向
+    return HttpResponsePermanentRedirect('frontend')
+    # 前后端合并之后，测试环境的前端路由重定向
+    # return HttpResponsePermanentRedirect(SITE_URL + 'frontend')
 
 
 def index(request):
@@ -38,7 +41,9 @@ def index(request):
     # """
     # 纯 Django 首页:永久跳转到‘执行任务’界面
     # """
+    # 前后端合并之后，本地开发环境的前端路由重定向
     # return HttpResponsePermanentRedirect('/execute-mission/')
+    # 前后端合并之后，测试环境的前端路由重定向
     # return HttpResponsePermanentRedirect(SITE_URL + 'execute-mission/')
 
 

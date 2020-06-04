@@ -24,13 +24,6 @@ from home_application.task import async_handle_execute_script
 from home_application.utils import pkg_execute_script_kwargs, handle_query_records
 
 
-def to_index(request):
-    # 前后端合并之后，本地开发环境的前端路由重定向
-    # return HttpResponsePermanentRedirect('frontend')
-    # 前后端合并之后，测试环境的前端路由重定向
-    return HttpResponsePermanentRedirect(SITE_URL + 'frontend')
-
-
 def index(request):
     """
     前后端分离:跳转到前端首页

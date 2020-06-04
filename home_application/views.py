@@ -26,9 +26,9 @@ from home_application.utils import pkg_execute_script_kwargs, handle_query_recor
 
 def to_index(request):
     # 前后端合并之后，本地开发环境的前端路由重定向
-    return HttpResponsePermanentRedirect('frontend')
+    # return HttpResponsePermanentRedirect('frontend')
     # 前后端合并之后，测试环境的前端路由重定向
-    # return HttpResponsePermanentRedirect(SITE_URL + 'frontend')
+    return HttpResponsePermanentRedirect(SITE_URL + 'frontend')
 
 
 def index(request):

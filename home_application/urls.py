@@ -12,5 +12,6 @@ urlpatterns = (
     url(r'^query-host-info/$', views.query_host_info, name='query_host_info'),
     url(r'^execute-script/$', views.execute_script, name="execute_script"),
     url(r'^query-record/$', views.query_record, name="query_record"),
-    url(r'^user/$', views.get_user, name="get_user")
+    url(r'^user/$', views.get_user, name="get_user"),
+    url(r'^example', views.index)
 )

@@ -58,6 +58,7 @@ INSTALLED_APPS += (
 MIDDLEWARE += (
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'blueapps.middleware.bkui.middlewares.BkuiPageMiddleware',
 )
 
 # 所有环境的日志级别可以在这里配置
@@ -103,7 +104,7 @@ INIT_SUPERUSER = ["admin", "1819785416"]
 MAKO_DEFAULT_FILTERS = ['h']
 
 # BKUI是否使用了history模式
-IS_BKUI_HISTORY_MODE = False
+IS_BKUI_HISTORY_MODE = True
 
 # 是否需要对AJAX弹窗登录强行打开
 IS_AJAX_PLAIN_MODE = False

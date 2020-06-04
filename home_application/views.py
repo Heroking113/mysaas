@@ -24,6 +24,11 @@ from home_application.task import async_handle_execute_script
 from home_application.utils import pkg_execute_script_kwargs, handle_query_records
 
 
+def to_index(request):
+    # return HttpResponsePermanentRedirect('/frontend/')
+    return HttpResponsePermanentRedirect(SITE_URL + 'frontend/')
+
+
 def index(request):
     """
     前后端分离:跳转到前端首页
@@ -38,7 +43,7 @@ def index(request):
     # return HttpResponsePermanentRedirect(SITE_URL + 'execute-mission/')
 
 
-def get_user(request):
+def get_user_info(request):
     client = get_client_by_request(request)
     user = client.bk_login.get_user(bk_app_code='herokingfsaas',
                                     bk_app_secret='d9664192-989a-424e-b0e6-5acb404fee2d')

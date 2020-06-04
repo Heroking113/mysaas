@@ -41,11 +41,12 @@ def index(request):
 
 
 # 显式地获取用户信息（不建议这么写，因为bk_app_code 和 bk_app_secret 都是敏感信息）
-# def get_user_info(request):
-#     client = get_client_by_request(request)
-#     user = client.bk_login.get_user(bk_app_code='herokingfsaas',
-#                                     bk_app_secret='d9664192-989a-424e-b0e6-5acb404fee2d')
-#     return JsonResponse(user)
+def get_user_info(request):
+    client = get_client_by_request(request)
+    user = client.bk_login.get_user(bk_app_code='herokingfsaas',
+                                    bk_app_secret='d9664192-989a-424e-b0e6-5acb404fee2d')
+    return JsonResponse(user)
+
 
 def execute_mission(request):
     # 调用开发的云API接口

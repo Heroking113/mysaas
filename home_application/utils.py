@@ -3,19 +3,13 @@
 from home_application.models import FastExecuteScript, ScriptSearch, ScriptJobRecord
 
 
-def pkg_execute_script_kwargs(request, client):
-    # 根据前端的business_name获取对应的bk_biz_id
-    business_data = client.cc.search_business()["data"]["info"]
-    bk_biz_id = ''
-    for business_item in business_data:
-        if business_item["bk_biz_name"] == request.POST.get("business_name", ""):
-            bk_biz_id = business_item["bk_biz_id"]
-            break
+def pkg_execute_script_kwargs(kwargs, client):
+    bk_biz_id = kwargs.get("bk_biz_id", "")
 
     # 根据前端传来的host_ips获取bk_cloud_id
     host_data = client.cc.search_host({"bk_biz_id": bk_biz_id})["data"]["info"]
     bk_cloud_id = []
-    host_ips = request.POST.get("host_ips", "")
+    host_ips = kwargs.get("host_ips", [])
     for host_item in host_data:
         if host_item["host"]["bk_host_innerip"] in host_ips:
             bk_cloud_id.append(host_item["host"]["bk_cloud_id"][0]["id"])
@@ -29,25 +23,31 @@ def pkg_execute_script_kwargs(request, client):
         bk_host_ip=host_ips
     )
     bk_cloud_id = bk_cloud_id.split(",")
-    ip = host_ips.split(",")
-    ip_list = [{"bk_cloud_id": bk_cloud_id[i], "ip": ip[i]} for i in range(len(bk_cloud_id))]
+    host_ips = host_ips.split(",")
+    ip_list = [{"bk_cloud_id": bk_cloud_id[i], "ip": host_ips[i]} for i in range(len(bk_cloud_id))]
 
     # 获取查询脚本
-    to_execute_script = ScriptSearch.objects.get(name=request.POST.get("script_name"))
-    script_content = to_execute_script.content
+    # to_execute_script = ScriptSearch.objects.get(content=kwargs["script"])
+    # script_content = to_execute_script.content
+    business_data = client.cc.search_business()["data"]["info"]
 
+    bk_biz_name = None
+    for business_item in business_data:
+        if business_item["bk_biz_id"] == int(kwargs["bk_biz_id"]):
+            bk_biz_name = business_item["bk_biz_name"]
+            break
     script_job_record = ScriptJobRecord.objects.create(
-        business=request.POST.get("business_name"),
-        mission=request.POST.get("script_name"),
-        operator=request.user.username,
-        machine_num=len(host_ips.split(","))
+        business=bk_biz_name,
+        mission=kwargs["script"],
+        operator=kwargs["user"],
+        machine_num=len(host_ips)
     )
     record_id = script_job_record.id
     # 拼接参数
     fast_kwargs = {
         "account": "root",
         "bk_biz_id": bk_biz_id,
-        "script_content": script_content,
+        "script_id": 116,
         "ip_list": ip_list,
         "record_id": record_id
     }

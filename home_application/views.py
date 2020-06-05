@@ -40,32 +40,44 @@ def index(request):
     # return HttpResponsePermanentRedirect(SITE_URL + 'execute-mission/')
 
 
-# 显式地获取用户信息（不建议这么写，因为bk_app_code 和 bk_app_secret 都是敏感信息）
-def get_user_info(request):
-    client = get_client_by_request(request)
-    user = client.bk_login.get_user(bk_app_code='herokingfsaas',
-                                    bk_app_secret='d9664192-989a-424e-b0e6-5acb404fee2d')
-    return JsonResponse(user)
+# # 显式地获取用户信息（不建议这么写，因为bk_app_code 和 bk_app_secret 都是敏感信息）
+# def get_user_info(request):
+#     client = get_client_by_request(request)
+#     user = client.bk_login.get_user(bk_app_code='herokingfsaas',
+#                                     bk_app_secret='d9664192-989a-424e-b0e6-5acb404fee2d')
+#     return JsonResponse(user)
 
 
-def execute_mission(request):
+@csrf_exempt
+def query_all_info(request):
     # 调用开发的云API接口
     client = get_client_by_request(request)
     business_data = client.cc.search_business()["data"]["info"]
-    business_data.append({"bk_biz_name": "所有业务"})
+    business_data.append({"bk_biz_name": "所有业务", "bk_biz_id": 0})
     business_data.reverse()
     host_data = client.cc.search_host()
     script_contents = ScriptSearch.objects.all()
     serializer = ScriptSearchSerializer(script_contents, many=True)
     script_data = serializer.data
-    return render(request,
-                  'home_application/execute_mission.html',
-                  {
-                      "business_data": business_data,
-                      "script_data": script_data,
-                      "host_data": host_data["data"]["info"],
-                      "site_url": json.dumps(SITE_URL)
-                  })
+
+    return JsonResponse({
+        "result": True,
+        "code": 0,
+        "message": "success",
+        "data": {
+            "business_data": business_data,
+            "script_data": script_data,
+            "host_data": host_data["data"]["info"]
+        }
+    })
+    # return render(request,
+    #               'home_application/execute_mission.html',
+    #               {
+    #                   "business_data": business_data,
+    #                   "script_data": script_data,
+    #                   "host_data": host_data["data"]["info"],
+    #                   "site_url": json.dumps(SITE_URL)
+    #               })
 
 
 def mission_record(request):
@@ -78,29 +90,28 @@ def mission_record(request):
 def query_host_info(request):
     # 调用开发的云API接口
     client = get_client_by_request(request)
-
-    business_data = client.cc.search_business()
-    business_data = business_data["data"]["info"]
-
-    bk_biz_id = None
-    for business_item in business_data:
-        if business_item["bk_biz_name"] == request.POST.get("business_name", ""):
-            bk_biz_id = business_item["bk_biz_id"]
-            break
-    host_data = client.cc.search_host({"bk_biz_id": bk_biz_id})["data"]["info"]
+    host_data = client.cc.search_host({"bk_biz_id": request.POST["bk_biz_id"]})["data"]["info"]
 
     return JsonResponse({
         "result": True,
         "code": 0,
-        "host_data": host_data
+        "message": "success",
+        "data": {
+            "host_data": host_data
+        }
     })
 
 
 @csrf_exempt
 def execute_script(request):
     client = get_client_by_request(request)
+    req_kwargs = {}
+    req_kwargs["bk_biz_id"] = request.POST.get("bk_biz_id", "")
+    req_kwargs["script"] = request.POST.get("script", "")
+    req_kwargs["host_ips"] = request.POST.get("host_ips", "")
+    req_kwargs["user"] = request.user.username
     # 封装参数
-    kwargs = pkg_execute_script_kwargs(request, client)
+    kwargs = pkg_execute_script_kwargs(req_kwargs, client)
     # 异步执行
     async_handle_execute_script.delay(client, kwargs)
 
@@ -109,7 +120,6 @@ def execute_script(request):
     while True:
         script_job_record = ScriptJobRecord.objects.get(pk=kwargs["record_id"])
         status = script_job_record.status
-        #
         if status is not None or SEARCH_COUNT > 2:
             status = status == str(True)
             res = {

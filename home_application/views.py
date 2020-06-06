@@ -70,20 +70,6 @@ def query_all_info(request):
             "host_data": host_data["data"]["info"]
         }
     })
-    # return render(request,
-    #               'home_application/execute_mission.html',
-    #               {
-    #                   "business_data": business_data,
-    #                   "script_data": script_data,
-    #                   "host_data": host_data["data"]["info"],
-    #                   "site_url": json.dumps(SITE_URL)
-    #               })
-
-
-def mission_record(request):
-    context = handle_query_records()
-    context["site_url"] = json.dumps(SITE_URL)
-    return render(request, 'home_application/mission_record.html', {"context": context})
 
 
 @csrf_exempt
@@ -133,10 +119,11 @@ def execute_script(request):
         time.sleep(1)
 
 
-def query_record(request):
-    business = "" if request.GET.get("business") == "所有业务" else request.GET.get("business", "")
-    operator = "" if request.GET.get("operator") == "所有用户" else request.GET.get("operator", "")
-    mission = "" if request.GET.get("mission") == "所有任务" else request.GET.get("mission", "")
+@csrf_exempt
+def retrive_record(request):
+    business = "" if request.POST.get("business") == "所有业务" else request.POST.get("business", "")
+    operator = "" if request.POST.get("operator") == "所有用户" else request.POST.get("operator", "")
+    mission = "" if request.POST.get("mission") == "所有任务" else request.POST.get("mission", "")
     kwargs = {}
     if business:
         kwargs["business"] = business
@@ -144,10 +131,9 @@ def query_record(request):
         kwargs["operator"] = operator
     if mission:
         kwargs["mission"] = mission
-    querysets = ScriptJobRecord.objects.filter(**kwargs)
-
-    context = []
-    for item in querysets:
+    queryset = ScriptJobRecord.objects.filter(**kwargs)
+    records = []
+    for item in queryset:
         dic_data = {
             "operator": item.operator,
             "business": item.business,
@@ -156,11 +142,60 @@ def query_record(request):
             "machine_num": item.machine_num,
             "status": item.status
         }
-        context.append(dic_data)
+        records.append(dic_data)
 
     return JsonResponse({
         "result": True,
         "code": 0,
         "message": "success",
-        "data": context
+        "data": {
+            "records": records
+        }
+    })
+
+
+def query_record(request):
+    querysets = ScriptJobRecord.objects.all()
+
+    records = []
+    users = []
+    businesses = []
+    scripts = []
+    for item in querysets:
+        users.append(item.operator)
+        businesses.append(item.business)
+        scripts.append(item.mission)
+        dic_data = {
+            "operator": item.operator,
+            "business": item.business,
+            "mission": item.mission,
+            "start_time": item.start_time,
+            "machine_num": item.machine_num,
+            "status": item.status
+        }
+        records.append(dic_data)
+
+    users = list(set(users))
+    users.append("所有用户")
+    users.reverse()
+    users = [{"user_name": user_item} for user_item in users]
+    businesses = list(set(businesses))
+    businesses.append("所有业务")
+    businesses.reverse()
+    businesses = [{"busi_name": busi_item} for busi_item in businesses]
+    scripts = list(set(scripts))
+    scripts.append("所有任务")
+    scripts.reverse()
+    scripts = [{"script_name": script_item} for script_item in scripts]
+
+    return JsonResponse({
+        "result": True,
+        "code": 0,
+        "message": "success",
+        "data": {
+            "records": records,
+            "users": users,
+            "businesses": businesses,
+            "scripts": scripts
+        }
     })

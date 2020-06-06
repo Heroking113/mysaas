@@ -8,23 +8,21 @@ def pkg_execute_script_kwargs(kwargs, client):
 
     # 根据前端传来的host_ips获取bk_cloud_id
     host_data = client.cc.search_host({"bk_biz_id": bk_biz_id})["data"]["info"]
-    bk_cloud_id = []
+    bk_cloud_id = ''
     host_ips = kwargs.get("host_ips", [])
     for host_item in host_data:
         if host_item["host"]["bk_host_innerip"] in host_ips:
-            bk_cloud_id.append(host_item["host"]["bk_cloud_id"][0]["id"])
+            bk_cloud_id = host_item["host"]["bk_cloud_id"][0]["id"]
             break
 
-    bk_cloud_id = ",".join(bk_cloud_id)
     # 把要执行的相关信息存入数据表
     fastexecutescript = FastExecuteScript.objects.create(
         bk_biz_id=bk_biz_id,
         bk_cloud_id=bk_cloud_id,
         bk_host_ip=host_ips
     )
-    bk_cloud_id = bk_cloud_id.split(",")
     host_ips = host_ips.split(",")
-    ip_list = [{"bk_cloud_id": bk_cloud_id[i], "ip": host_ips[i]} for i in range(len(bk_cloud_id))]
+    ip_list = [{"bk_cloud_id": bk_cloud_id, "ip": host_ips[i]} for i in range(len(bk_cloud_id))]
 
     # 获取查询脚本
     # to_execute_script = ScriptSearch.objects.get(content=kwargs["script"])

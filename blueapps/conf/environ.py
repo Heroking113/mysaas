@@ -44,7 +44,8 @@ BK_URL = os.getenv('BKPAAS_URL', BK_URL)  # noqa
 BK_DEV_URL = BK_URL
 
 # 站点URL
-SITE_URL = os.getenv('BKPAAS_SUB_PATH', '/')
+SITE_URL = os.getenv('BKAPP_SITE_URL', '/')
+# SITE_URL = os.getenv('BKPAAS_SUB_PATH', '/')
 
 # 远程静态文件URL
 REMOTE_STATIC_URL = os.getenv('BKPAAS_REMOTE_STATIC_URL',

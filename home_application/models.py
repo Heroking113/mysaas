@@ -21,3 +21,23 @@ class ScriptJobRecord(models.Model):
     start_time = models.DateTimeField(auto_now=True)
     machine_num = models.IntegerField(null=True, blank=True)
     status = models.CharField(max_length=10, null=True, blank=True)
+
+
+class HostInfo(models.Model):
+    bk_host_innerip = models.CharField(max_length=50, null=True, blank=True)
+    bk_os_name = models.CharField(max_length=30, null=True, blank=True)
+
+    class Meta:
+        db_table = "host_info"
+        verbose_name = "主机信息"
+        verbose_name_plural = verbose_name
+
+
+class BusinessInfo(models.Model):
+    bk_biz_id = models.CharField(max_length=50, null=True, blank=True)
+    bk_biz_name = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        db_table = "business_info"
+        verbose_name = "业务信息"
+        verbose_name_plural = verbose_name

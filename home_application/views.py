@@ -23,7 +23,7 @@ def index(request):
     return render(request, "index.html")
 
 
-@api_view(['GET'])
+# @action(methods=['get'], detail=False)
 def query_all_info(request):
     """
     @api {GET} /query_all_info/ 获取所有的信息

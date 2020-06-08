@@ -119,7 +119,9 @@ def get_host_data(client):
     host_querysets = HostInfo.objects.all()
     if not host_querysets.exists():
         # 如果数据库中没有数据，则调用 search_host 接口，获取主机信息，并将其存入数据库
-        res_data = client.cc.search_host()["data"]["info"]
+        res_data = client.cc.search_host()
+
+        res_data = res_data["data"]["info"]
         host_data = []
         for item in res_data:
             bk_host_innerip = item["host"].get("bk_host_innerip", "")

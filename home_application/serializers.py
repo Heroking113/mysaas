@@ -2,28 +2,30 @@
 
 from rest_framework import serializers
 
-from home_application.models import ScriptJobRecord, HostInfo, BusinessInfo, ScriptSearch
+from home_application.models import MissionRecord
 
 
-class ScriptSearchSerializer(serializers.Serializer):
-    name = serializers.CharField(read_only=True)
-    content = serializers.CharField(read_only=True)
+class MissionInfoSerializer(serializers.Serializer):
+    mission_name = serializers.CharField(required=True)
+    mission_content = serializers.CharField(required=True)
 
 
-class ScriptJobRecordSerializer(serializers.ModelSerializer):
+class MissionRecordSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ScriptJobRecord
-        fields = ["business", "mission", "operator", "start_time", "machine_num", "status"]
+        model = MissionRecord
+        fields = "__all__"
 
 
-class HostInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = HostInfo
-        fields = ["bk_host_innerip", "bk_os_name"]
+class HostInfoSerializer(serializers.Serializer):
+    bk_cloud_id = serializers.CharField(required=True)
+    bk_cpu = serializers.IntegerField(required=True)
+    bk_os_name = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    bk_host_id = serializers.CharField(required=True)
+    bk_host_innerip = serializers.CharField(required=True)
+    bk_os_bit = serializers.CharField(required=True)
+    create_time = serializers.DateTimeField(required=True)
 
 
-class BusinessInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BusinessInfo
-        fields = ["bk_biz_id", "bk_biz_name"]
-
+class BusinessInfoSerializer(serializers.Serializer):
+    bk_biz_id = serializers.CharField(required=True)
+    bk_biz_name = serializers.CharField(required=True)

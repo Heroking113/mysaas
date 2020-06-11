@@ -23,12 +23,17 @@ from blueapps.conf.default_settings import *  # noqa
 #     'blueapps.account',
 # )
 
+
+# 自定义属性
+USE_TZ = True
+RUN_VER = "open"
+
 # 请在这里加入你的自定义 APP
 INSTALLED_APPS += (
     'home_application',
     'mako_application',
-    'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'rest_framework'
 )
 
 # 这里是默认的中间件，大部分情况下，不需要改动
@@ -59,6 +64,7 @@ MIDDLEWARE += (
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'blueapps.middleware.bkui.middlewares.BkuiPageMiddleware',
+    'blueapps.account.middlewares.LoginRequiredMiddleware'
 )
 
 # 所有环境的日志级别可以在这里配置
@@ -121,9 +127,9 @@ LANGUAGES = (
 )
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    )
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework.authentication.TokenAuthentication',
+    # )
 }
 
 """

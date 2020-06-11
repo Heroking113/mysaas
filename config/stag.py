@@ -38,7 +38,7 @@ DATABASES.update(
 
 # 测试环境配置
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8088',
+    'http://appdev.paas-class.bktencent.com:8086',
 ]
 
 # 允许跨域使用cookie

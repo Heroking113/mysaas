@@ -11,9 +11,14 @@ class MissionInfoSerializer(serializers.Serializer):
 
 
 class MissionRecordSerializer(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField()
+
     class Meta:
         model = MissionRecord
         fields = "__all__"
+
+    def get_status(self, obj):
+        return obj.get_status_display()
 
 
 class HostInfoSerializer(serializers.Serializer):

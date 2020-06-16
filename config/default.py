@@ -126,11 +126,7 @@ LANGUAGES = (
     ('zh-hans', u'简体中文'),
 )
 
-REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework.authentication.TokenAuthentication',
-    # )
-}
+REST_FRAMEWORK = {}
 
 """
 以下为框架代码 请勿修改

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="TerminalProjectOptionsProvider">
+    <envs>
+      <env key="PYTHONUNBUFFERED" value="1" />
+      <env key="DJANGO_SETTINGS_MODULE" value="settings" />
+    </envs>
+    <option name="myStartingDirectory" value="E:\mysaas\home_application" />
+  </component>
+</project>

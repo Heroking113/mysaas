@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 
-
-# Create your models here.
-from home_application.common import get_cc_hosts, get_cc_businesses
+from home_application.third_party_interface import get_cc_hosts, get_cc_businesses
 
 
 class MissionInfo(models.Model):
@@ -24,14 +22,14 @@ class MissionRecord(models.Model):
     JOB_STATUS = (
         ("success", "执行成功"),
         ("doing", "执行中"),
-        ("fail", "失败")
+        ("fail", "执行失败"),
     )
     business_name = models.CharField(verbose_name="业务名称", max_length=128)
     mission_name = models.CharField(verbose_name="任务名称", max_length=128)
     machine_num = models.IntegerField(verbose_name="机器数")
-    status = models.CharField(verbose_name="执行状态", choices=JOB_STATUS, max_length=32)
+    status = models.CharField(verbose_name="执行状态", choices=JOB_STATUS, max_length=32, default="doing")
     operator = models.CharField(verbose_name="操作者", max_length=32)
-    create_time = models.DateTimeField(verbose_name="创建时间")
+    create_time = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
 
     class Meta:
         db_table = "mission_record"
@@ -52,7 +50,8 @@ class MissionRecord(models.Model):
         if operator and operator != "所有用户":
             kwargs["operator"] = operator
 
-        return cls.objects.filter(**kwargs)
+        querysets = cls.objects.filter(**kwargs)
+        return querysets
 
 
 class HostInfo(models.Model):
@@ -90,6 +89,9 @@ class HostInfo(models.Model):
             return host_querysets
         # 调用接口获取主机信息
         res_data = get_cc_hosts(client, start, limit)
+        if not res_data:
+            # 接口调用失败则直接返回
+            return res_data
         # 解析数据，存入数据库
         host_data = []
         for item in res_data:
@@ -136,6 +138,8 @@ class BusinessInfo(models.Model):
             return business_querysets
         # 调用接口获取业务信息
         res_data = get_cc_businesses(start, limit, client)
+        if not res_data:
+            return res_data
         # 解析数据，存入数据库
         business_data = []
         for item in res_data:

@@ -1,92 +1,86 @@
 # _*_ coding: utf-8 _*_
+from collections import OrderedDict
+
+from django.utils import six
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
-
-
-def get_cc_hosts(client, start=0, limit=20, bk_biz_id=None):
-    """
-    调用第三方接口，获取主机信息
-    """
-    kwargs = {
-        "page": {
-            "start": start,
-            "limit": limit
-        }
-    }
-    if bk_biz_id:
-        kwargs["bk_biz_id"] = bk_biz_id
-
-    try:
-        res = client.cc.search_host(kwargs)
-    except Exception as e:
-        # TODO 添加具体的异常
-        pass
-
-    return handle_host_infos(res["data"]["info"])
-
-
-def get_cc_businesses(start, limit, client):
-    """
-     调用第三方接口，获取业务信息
-    """
-    kwargs = {
-        "page": {
-            "start": start,
-            "limit": limit
-        }
-    }
-    try:
-        res = client.cc.search_business(kwargs)
-    except Exception as e:
-        # TODO 添加具体的异常
-        pass
-
-    return res["data"]["info"]
-
-
-def handle_host_infos(data):
-    """清洗从第三方接口获取到的主机信息"""
-    clean_data = []
-    for item in data:
-        clean_data.append({
-            "bk_cloud_id": item["host"]["bk_cloud_id"][0]["id"],
-            "bk_cpu": item["host"].get("bk_cpu", ""),
-            "bk_os_name": item["host"].get("bk_os_name", ""),
-            "bk_host_id": item["host"].get("bk_host_id", ""),
-            "bk_host_innerip": item["host"].get("bk_host_innerip", ""),
-            "bk_os_bit": item["host"].get("bk_os_bit", ""),
-            "create_time": item["host"].get("create_time", "")
-        })
-
-    return clean_data
+from rest_framework.pagination import PageNumberPagination
 
 
 class CustomResponse(Response):
-    """
-    根据蓝鲸的响应规范，现规定接口响应中，必须返回以下四个字段：
-    {
-        "result": true,
-        "message": "",
-        "code": 200,
-        "data": []
-    }
-    """
-    def __init__(self, result=None,
-                 message=None, code=None,
-                 data=None, status=None, headers=None):
-        super().__init__(None, status=status)
+    class RetConstant(object):
+        CODE_SUCCESS = 200
+        MSG_SUCCESS = "success"
 
-        if isinstance(data, Serializer):
-            msg = (
-                'You passed a Serializer instance as data, but '
-                'probably meant to pass serialized `.data` or '
-                '`.error`. representation.'
-            )
-            raise AssertionError(msg)
+    def __init__(self,
+                 code=RetConstant.CODE_SUCCESS,
+                 message=RetConstant.MSG_SUCCESS,
+                 data={},
+                 result=True, status=status.HTTP_200_OK,
+                 template_name=None,
+                 headers=None,
+                 exception=False,
+                 content_type='application/json'
+                 ):
+        super(Response, self).__init__(None, status=status)
+        self._code = code
+        self._message = message
+        self._data = data
+        self._result = result
 
         self.data = {"result": result, "code": code, "message": message, "data": data}
+        self.template_name = template_name
+        self.exception = exception
+        self.content_type = content_type
 
         if headers:
-            for name, value in headers.items():
+            for name, value in six.iteritems(headers):
                 self[name] = value
 
+    @property
+    def code(self):
+        return self._code
+
+    @code.setter
+    def code(self, value):
+        self._code = value
+
+    @property
+    def message(self):
+        return self._message
+
+    @message.setter
+    def message(self, value):
+        self._message = value
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+
+    @property
+    def result(self):
+        return self._result
+
+    @message.setter
+    def result(self, value):
+        self._result = value
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 8
+    max_page_size = 50
+    page_query_param = "page"
+    page_size_query_param = page_size
+
+    def get_paginated_response(self, data):
+        return Response(OrderedDict([
+            ("result", True),
+            ("code", 200),
+            ("messsage", "success"),
+            ('count', self.page.paginator.count),
+            ("data", data)
+        ]))

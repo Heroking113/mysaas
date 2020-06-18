@@ -27,9 +27,9 @@ def get_env_or_raise(key):
 
 # 这些变量将由平台通过环境变量提供给应用，本地开发时需手动配置，详见：http://docs.open.oa.com/topics/company_tencent/python_framework_usage#29-配置环境变量
 # 应用 ID
-APP_CODE = 'herokingfsaas'
+APP_CODE = os.getenv("BKPAAS_APP_ID")
 # 应用用于调用云 API 的 Secret
-SECRET_KEY = 'd9664192-989a-424e-b0e6-5acb404fee2d'
+SECRET_KEY = os.getenv('BKPAAS_APP_SECRET')
 
 # SaaS运行版本，如非必要请勿修改
 RUN_VER = 'open'

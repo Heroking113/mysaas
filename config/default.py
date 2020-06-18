@@ -26,7 +26,8 @@ from blueapps.conf.default_settings import *  # noqa
 
 # 自定义属性
 USE_TZ = True
-RUN_VER = "open"
+RUN_VER = 'open'
+timezone = 'Asia/Shanghai'
 
 # 请在这里加入你的自定义 APP
 INSTALLED_APPS += (

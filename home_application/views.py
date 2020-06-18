@@ -5,9 +5,9 @@ from rest_framework.decorators import api_view, action
 
 from blueking.component.shortcuts import get_client_by_request
 
-from home_application.models import HostInfo, BusinessInfo, MissionInfo, MissionRecord
+from home_application.models import Host, Business, Mission, MissionRecord
 from home_application.serializers import (
-    HostInfoSerializer, BusinessInfoSerializer, MissionInfoSerializer, MissionRecordSerializer
+    HostSerializer, BusinessSerializer, MissionSerializer, MissionRecordSerializer
 )
 from home_application.utils import handle_execute_script
 from home_application.common import CustomResponse, CustomPagination
@@ -223,24 +223,24 @@ def query_all_info(request):
     """
     client = get_client_by_request(request)
     # 获取主机信息
-    host_querysets = HostInfo.query_hosts(start=0, limit=15, client=client)
+    host_querysets = Host.query_hosts(start=0, limit=15, client=client)
     if host_querysets:
-        host_serializer = HostInfoSerializer(host_querysets, many=True)
+        host_serializer = HostSerializer(host_querysets, many=True)
         host_data = host_serializer.data
     else:
         host_data = ""
 
     # 获取业务信息
-    business_querysets = BusinessInfo.query_businesses(start=0, limit=50, client=client)
+    business_querysets = Business.query_businesses(start=0, limit=50, client=client)
     if business_querysets:
-        business_serializer = BusinessInfoSerializer(business_querysets, many=True)
+        business_serializer = BusinessSerializer(business_querysets, many=True)
         business_data = business_serializer.data
     else:
         business_data = ""
 
     # 获取任务信息
-    mission_querysets = MissionInfo.objects.all()
-    mission_serializer = MissionInfoSerializer(mission_querysets, many=True)
+    mission_querysets = Mission.objects.all()
+    mission_serializer = MissionSerializer(mission_querysets, many=True)
     mission_data = mission_serializer.data
 
     res_data = {

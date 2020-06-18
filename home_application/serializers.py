@@ -2,12 +2,13 @@
 
 from rest_framework import serializers
 
-from home_application.models import MissionRecord
+from home_application.models import MissionRecord, Host, Mission, Business
 
 
-class MissionInfoSerializer(serializers.Serializer):
-    mission_name = serializers.CharField(required=True)
-    mission_content = serializers.CharField(required=True)
+class MissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mission
+        fields = "__all__"
 
 
 class MissionRecordSerializer(serializers.ModelSerializer):
@@ -21,16 +22,13 @@ class MissionRecordSerializer(serializers.ModelSerializer):
         return obj.get_status_display()
 
 
-class HostInfoSerializer(serializers.Serializer):
-    bk_cloud_id = serializers.CharField(required=True)
-    bk_cpu = serializers.IntegerField(required=True)
-    bk_os_name = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    bk_host_id = serializers.CharField(required=True)
-    bk_host_innerip = serializers.CharField(required=True)
-    bk_os_bit = serializers.CharField(required=True)
-    create_time = serializers.DateTimeField(required=True)
+class HostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Host
+        fields = "__all__"
 
 
-class BusinessInfoSerializer(serializers.Serializer):
-    bk_biz_id = serializers.CharField(required=True)
-    bk_biz_name = serializers.CharField(required=True)
+class BusinessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Business
+        fields = "__all__"

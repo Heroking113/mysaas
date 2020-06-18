@@ -4,13 +4,13 @@ from django.db import models
 from home_application.third_party_interface import get_cc_hosts, get_cc_businesses
 
 
-class MissionInfo(models.Model):
+class Mission(models.Model):
     """存储任务信息"""
     mission_name = models.CharField(verbose_name="任务名称", max_length=128)
     mission_content = models.TextField(verbose_name="任务内容")
 
     class Meta:
-        db_table = "mission_info"
+        db_table = "mission"
         verbose_name = "任务信息"
         verbose_name_plural = verbose_name
 
@@ -54,7 +54,7 @@ class MissionRecord(models.Model):
         return querysets
 
 
-class HostInfo(models.Model):
+class Host(models.Model):
     """
     存储主机信息
     调用第三放接口返回的数据中，"核数" 和 ”操作系统名称“字段可能为空，所以暂时让该字段可为空
@@ -68,7 +68,7 @@ class HostInfo(models.Model):
     create_time = models.DateTimeField(verbose_name="创建时间")
 
     class Meta:
-        db_table = "host_info"
+        db_table = "host"
         verbose_name = "主机信息"
         verbose_name_plural = verbose_name
 
@@ -109,7 +109,7 @@ class HostInfo(models.Model):
         return cls.objects.bulk_create(host_data)
 
 
-class BusinessInfo(models.Model):
+class Business(models.Model):
     """
     获取业务信息
     """
@@ -117,7 +117,7 @@ class BusinessInfo(models.Model):
     bk_biz_name = models.CharField(verbose_name="业务名称", max_length=128)
 
     class Meta:
-        db_table = "business_info"
+        db_table = "business"
         verbose_name = "业务信息"
         verbose_name_plural = verbose_name
 
@@ -145,9 +145,9 @@ class BusinessInfo(models.Model):
         for item in res_data:
             bk_biz_id = item.get("bk_biz_id", "")
             bk_biz_name = item.get("bk_biz_name", "")
-            business_data.append(BusinessInfo(bk_biz_id=bk_biz_id, bk_biz_name=bk_biz_name))
+            business_data.append(Business(bk_biz_id=bk_biz_id, bk_biz_name=bk_biz_name))
 
-        return BusinessInfo.objects.bulk_create(business_data)
+        return Business.objects.bulk_create(business_data)
 
 
 def validate_start_limit(start, limit):

@@ -15,7 +15,6 @@ app = Celery('tasks', backend='rpc://', broker='amqp://guest@localhost//')
 
 @task
 def async_handle_execute_script(client, kwargs, record_id):
-    print("111")
     try:
         result = client.job.fast_execute_script(kwargs)
     except Exception as e:

@@ -14,7 +14,8 @@ urlpatterns = [
     path('', views.index),
     path('query_all_info/', views.query_all_info, name='query_all_info'),
     path('retrieve_host/', views.retrieve_host, name="retrieve_host"),
-    path('execute_script/', views.execute_script, name="execute_script")
+    path('execute_script/', views.execute_script, name="execute_script"),
+    path('query_host_by_business/', views.query_host_by_business, name="query_host_by_business")
 ]
 
 urlpatterns += [path('', include(router.urls))]

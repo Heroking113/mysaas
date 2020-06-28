@@ -1,10 +1,15 @@
 # _*_ coding: utf-8 _*_
+import json
 from collections import OrderedDict
 
-from django.utils import six
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+
+from blueking.component.shortcuts import get_client_by_request
+
+from home_application.models import MissionRecord
+from home_application.tasks import async_handle_execute_script
 
 
 class CustomResponse(Response):
@@ -15,27 +20,19 @@ class CustomResponse(Response):
     def __init__(self,
                  code=RetConstant.CODE_SUCCESS,
                  message=RetConstant.MSG_SUCCESS,
-                 data={},
-                 result=True, status=status.HTTP_200_OK,
-                 template_name=None,
-                 headers=None,
-                 exception=False,
+                 data=None,
+                 result=True,
+                 status_=status.HTTP_200_OK,
                  content_type='application/json'
                  ):
-        super(Response, self).__init__(None, status=status)
+        super(Response, self).__init__(None, status=status_)
         self._code = code
         self._message = message
         self._data = data
         self._result = result
-
-        self.data = {"result": result, "code": code, "message": message, "data": data}
-        self.template_name = template_name
-        self.exception = exception
         self.content_type = content_type
 
-        if headers:
-            for name, value in six.iteritems(headers):
-                self[name] = value
+        self.data = {"result": result, "code": code, "message": message, "data": data}
 
     @property
     def code(self):
@@ -84,3 +81,39 @@ class CustomPagination(PageNumberPagination):
             ('count', self.page.paginator.count),
             ("data", data)
         ]))
+
+
+def handle_execute_script(request):
+    """
+    将任务信息记录到数据库，并通过异步任务执行脚本，将执行状态更新到数据库
+    """
+    client = get_client_by_request(request)
+    bk_biz_id = request.data.get("bk_biz_id", "")
+    host_list = json.loads(request.data.get("host_list"))
+    user = request.user.username
+    business_name = request.data.get("business_name", "")
+    mission_name = request.data.get("mission_name", "")
+
+    ip_list = [{"bk_cloud_id": int(item["bk_cloud_id"]), "ip": item["bk_host_innerip"]} for item in host_list]
+    kwargs = {
+        "bk_biz_id": int(bk_biz_id),
+        "ip_list": ip_list,
+        "script_id": 116,
+        "user": user,
+        "account": "root"
+    }
+    # 把数据存入数据库
+    queryset = MissionRecord.objects.create(
+        business_name=business_name,
+        mission_name=mission_name,
+        machine_num=len(host_list),
+        operator=user
+    )
+    # 执行异步任务
+    async_result = async_handle_execute_script.delay(kwargs, record_id=queryset.id)
+    if async_result.ready():
+        res = async_result.get()
+    else:
+        res = "doing"
+
+    return res

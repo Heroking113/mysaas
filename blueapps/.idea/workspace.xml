@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="9ded9f5a-782e-43b5-a543-0bd397e2adf9" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../home_application/tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../config/default.py" beforeDir="false" afterPath="$PROJECT_DIR$/../config/default.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../config/dev.py" beforeDir="false" afterPath="$PROJECT_DIR$/../config/dev.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../config/prod.py" beforeDir="false" afterPath="$PROJECT_DIR$/../config/prod.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../config/stag.py" beforeDir="false" afterPath="$PROJECT_DIR$/../config/stag.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../home_application/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/migrations/0002_auto_20200612_1102.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/migrations/0003_remove_missionrecord_celery_id.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/migrations/0004_auto_20200612_1142.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/migrations/0005_auto_20200612_1158.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/migrations/0006_auto_20200614_1132.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/migrations/0007_auto_20200617_2141.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../home_application/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/task.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../home_application/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/third_party_interface.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/../home_application/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../home_application/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/../home_application/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../is_rsa_gitlab" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../is_rsa_gitlab.pub" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1dd0ek7TlnV33gbZj6V2Ekyane5" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9ded9f5a-782e-43b5-a543-0bd397e2adf9" name="Default Changelist" comment="" />
+      <created>1592739759983</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1592739759983</updated>
+      <workItem from="1592739761452" duration="17000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1007" y="398" key="FileChooserDialogImpl" timestamp="1592739777055">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1007" y="398" key="FileChooserDialogImpl/0.0.2560.1400/-2560.0.2560.1400@0.0.2560.1400" timestamp="1592739777055" />
+  </component>
+</project>

@@ -63,7 +63,6 @@ INSTALLED_APPS += (
 # 自定义中间件
 MIDDLEWARE += (
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'blueapps.middleware.bkui.middlewares.BkuiPageMiddleware',
     'blueapps.account.middlewares.LoginRequiredMiddleware'
 )
@@ -80,6 +79,8 @@ MIDDLEWARE += (
 # STATIC_VERSION_END
 STATIC_VERSION = '1.0'
 
+REQUEST = None
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
@@ -95,7 +96,7 @@ CELERYD_CONCURRENCY = os.getenv('BK_CELERYD_CONCURRENCY', 2)
 
 # CELERY 配置，申明任务的文件路径，即包含有 @task 装饰器的函数文件
 CELERY_IMPORTS = (
-    "home_application.task"
+    "home_application.tasks"
 )
 
 # load logging settings
@@ -127,7 +128,11 @@ LANGUAGES = (
     ('zh-hans', u'简体中文'),
 )
 
-REST_FRAMEWORK = {}
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated'
+    # ),
+}
 
 """
 以下为框架代码 请勿修改
@@ -140,7 +145,7 @@ if IS_USE_CELERY:
         'djcelery',
     )
     djcelery.setup_loader()
-    CELERY_ENABLE_UTC = False
+    CELERY_ENABLE_UTC = True
     CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 # remove disabled apps

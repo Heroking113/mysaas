@@ -20,7 +20,7 @@ else:
     }.get(PAAS_V2_ENVIRONMENT)
 DJANGO_CONF_MODULE = 'config.{env}'.format(env=ENVIRONMENT)
 
-#在本地开发环境下开启跨域允许
+# 在本地开发环境下开启跨域允许
 if ENVIRONMENT == 'dev':
     # 跨域增加忽略
     CORS_ALLOW_CREDENTIALS = True

@@ -20,9 +20,16 @@ STATIC_URL = '/static/'
 # REMOTE_STATIC_URL = '%sremote/' % STATIC_URL
 
 # Celery 消息队列设置 RabbitMQ
-BROKER_URL = 'amqp://guest:guest@localhost:5672//'
-# Celery 消息队列设置 Redis
-# BROKER_URL = 'redis://localhost:6379/0'
+# BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+# # # Celery 消息队列设置 Redis
+# # # BROKER_URL = 'redis://localhost:6379/0'
+# BACKEND_URL = 'redis://localhost:6379/1'
+BROKER_URL = 'redis://localhost:6379/2'
+# Celery backend设置 Redis
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/3'
+
+# celery时区设置，使用settings中TIME_ZONE同样的时区
+# CELERY_TIMEZONE = TIME_ZONE
 
 DEBUG = True
 

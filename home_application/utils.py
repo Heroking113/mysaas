@@ -3,41 +3,72 @@ import json
 
 from blueking.component.shortcuts import get_client_by_request
 
-from home_application.models import MissionRecord
-from home_application.task import async_handle_execute_script
+from home_application.models import Host, Business, BkToken
 
 
-def handle_execute_script(request):
+def save_bk_token_to_db(request):
+    """把调用第三方接口需要的信息存入数据库中，方便后期调用
     """
-    将任务信息记录到数据库，并通过异步任务执行脚本，将执行状态更新到数据库
-    """
-    client = get_client_by_request(request)
-    bk_biz_id = request.POST.get("bk_biz_id", "")
-    host_list = json.loads(request.POST.get("host_list", []))
-    user = request.user.username
-    business_name = request.POST.get("business_name", "")
-    mission_name = request.POST.get("mission_name", "")
-
-    ip_list = [{"bk_cloud_id": int(item["bk_cloud_id"]), "ip": item["ip"]} for item in host_list]
-    kwargs = {
-        "bk_biz_id": int(bk_biz_id),
-        "ip_list": ip_list,
-        "script_id": 116,
-        "user": user,
-        "account": "root"
-    }
-    # 把数据存入数据库
-    queryset = MissionRecord.objects.create(
-        business_name=business_name,
-        mission_name=mission_name,
-        machine_num=len(host_list),
-        operator=user
-    )
-    # 执行异步任务
-    async_result = async_handle_execute_script.delay(client, kwargs, record_id=queryset.id)
-    if async_result.ready():
-        res = async_result.get()
+    bk_token = request.headers["Cookie"].split(";")[0].split("=")[1]
+    queryset = BkToken.objects.first()
+    if queryset:
+        BkToken.objects.update_or_create(pk=queryset.id, defaults={"bk_token": bk_token})
     else:
-        res = "doing"
+        BkToken.objects.create(bk_token=bk_token)
 
-    return res
+
+class MyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, bytes):
+            return str(obj, encoding='utf-8')
+
+        return json.JSONEncoder.default(self, obj)
+
+
+def update_host_db(to_host_db_data, bk_biz_id):
+    """将主机信息更新到数据库
+    """
+    latest_data = []
+    for item in to_host_db_data:
+        kwargs = {
+            "bk_cloud_id": item["host"]["bk_cloud_id"][0]["id"],
+            "bk_biz_id": bk_biz_id,
+            "bk_host_id": item["host"].get("bk_host_id", ""),
+            "bk_host_innerip": item["host"].get("bk_host_innerip", "")
+        }
+        latest_data.append(kwargs)
+        Host.objects.update_or_create(**kwargs, defaults={
+            "bk_cloud_id": item["host"]["bk_cloud_id"][0]["id"],
+            "bk_biz_id": bk_biz_id,
+            "bk_cpu": item["host"].get("bk_cpu", ""),
+            "bk_os_name": item["host"].get("bk_os_name", ""),
+            "bk_host_id": item["host"].get("bk_host_id", ""),
+            "bk_host_innerip": item["host"].get("bk_host_innerip", ""),
+            "bk_os_bit": item["host"].get("bk_os_bit", "")
+        })
+
+    # 删除不在查询到的数据中的数据
+    querysets = Host.objects.values("bk_cloud_id", "bk_biz_id", "bk_host_innerip", "bk_host_id")
+    for item in querysets:
+        if item.get("bk_biz_id") == bk_biz_id and item not in latest_data:
+            Host.objects.filter(**item).delete()
+
+
+def update_business_db(to_business_db_data):
+    """
+    查询业务信息（第一次查询的时候，需要调用配置平台的接口获取业务信息并存入数据库）
+    """
+    latest_data = []
+    for index, item in enumerate(to_business_db_data):
+        kwargs = {
+            "bk_biz_id": item.get("bk_biz_id", ""),
+            "bk_biz_name": item.get("bk_biz_name", "")
+        }
+        Business.objects.update_or_create(**kwargs, defaults=kwargs)
+        latest_data.append(kwargs)
+
+    # 删除不在查询到的数据中的数据
+    querysets = Business.objects.values("bk_biz_id", "bk_biz_name")
+    for item in querysets:
+        if item not in latest_data:
+            Business.objects.filter(**item).delete()

@@ -1,27 +1,29 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from django.shortcuts import render
+from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, action
 
 from blueking.component.shortcuts import get_client_by_request
 
+from home_application.tasks import get_cc_hosts
+from home_application.utils import save_bk_token_to_db
+from home_application.decorators import calculate_func_execute_time
 from home_application.models import Host, Business, Mission, MissionRecord
+from home_application.common import CustomResponse, CustomPagination, handle_execute_script
 from home_application.serializers import (
     HostSerializer, BusinessSerializer, MissionSerializer, MissionRecordSerializer
 )
-from home_application.utils import handle_execute_script
-from home_application.common import CustomResponse, CustomPagination
-from home_application.third_party_interface import get_cc_hosts
 
 
-# @api_view(['GET'])
-# @renderer_classes([TemplateHTMLRenderer, JSONRenderer])
+# @calculate_func_execute_time
 def index(request):
     """
     前后端分离模式:跳转到前端首页
     """
-    # data = {}
-    # return Response(data=data, template_name='index.html')
+    save_bk_token_to_db(request)
     return render(request, "index.html")
 
 
@@ -81,10 +83,23 @@ def retrieve_host(request):
     }
     """
     bk_biz_id = request.query_params.get("bk_biz_id", "")
-    client = get_client_by_request(request)
-    data = get_cc_hosts(client, bk_biz_id=bk_biz_id)
+    create_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    host_id = Host.objects.create(create_time=create_time)
+    # 调用周期任务
+    get_cc_hosts.delay(request=request, bk_biz_id=bk_biz_id)
 
-    return CustomResponse(data=data)
+    # client = get_client_by_request(request)
+    # data = get_cc_hosts(client, bk_biz_id=bk_biz_id)
+    host_querysets = Host.objects.all()
+    host_serializer = HostSerializer(host_querysets, many=True)
+    return CustomResponse(data=host_serializer.data)
+
+
+@api_view(['GET'])
+def query_host_by_business(request):
+    querysets = Host.objects.filter(bk_biz_id=request.query_params["bk_biz_id"])
+    serializer = HostSerializer(querysets, many=True)
+    return CustomResponse(data=serializer.data)
 
 
 @api_view(['GET'])
@@ -221,9 +236,8 @@ def query_all_info(request):
         }
     }
     """
-    client = get_client_by_request(request)
     # 获取主机信息
-    host_querysets = Host.query_hosts(start=0, limit=15, client=client)
+    host_querysets = Host.objects.all()
     if host_querysets:
         host_serializer = HostSerializer(host_querysets, many=True)
         host_data = host_serializer.data
@@ -231,7 +245,7 @@ def query_all_info(request):
         host_data = ""
 
     # 获取业务信息
-    business_querysets = Business.query_businesses(start=0, limit=50, client=client)
+    business_querysets = Business.objects.all()
     if business_querysets:
         business_serializer = BusinessSerializer(business_querysets, many=True)
         business_data = business_serializer.data
@@ -260,7 +274,6 @@ def execute_script(request):
     @api {POST} /execute_script/ 获取所有的信息
     @apiName executeScript
 
-
     @apiParam {String} bk_biz_id     业务ID
     @apiParam {String}  bk_biz_name   业务名称
     @apiParam {String} script_content  脚本内容
@@ -276,17 +289,17 @@ def execute_script(request):
         result: true
     }
     """
-    JobStatus = {
-        "SUCCESS": "success",
-        "DOING": "doing",
-        "FAIL": "fail"
-    }
+    class JobStatus(object):
+        SUCCESS = "success"
+        DOING = "doing"
+        FAIL = "fail"
+
     res = handle_execute_script(request)
-    if res == JobStatus.get("SUCCESS"):
-        return CustomResponse(message="success")
-    elif res == JobStatus.get("DOING"):
-        return CustomResponse(message="doing")
-    return CustomResponse(message="fail")
+    if res == JobStatus.SUCCESS:
+        return CustomResponse(message=JobStatus.SUCCESS)
+    elif res == JobStatus.DOING:
+        return CustomResponse(message=JobStatus.DOING)
+    return CustomResponse(message=JobStatus.FAIL)
 
 
 class MissionRecordViewSet(viewsets.ReadOnlyModelViewSet):

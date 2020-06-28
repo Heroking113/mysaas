@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from unittest import TestCase
 from unittest.mock import patch, Mock
 from rest_framework.test import APITestCase
 from rest_framework.test import APIRequestFactory

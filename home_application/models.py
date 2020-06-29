@@ -103,7 +103,7 @@ class LoginBkToken(models.Model):
     """
     存储celery周期任务中需要的client信息
     """
-    bk_token = models.TextField(verbose_name="登录用户的bk_token")
+    bk_token = models.CharField(verbose_name="登录用户的bk_token", max_length=256)
 
     class Meta:
         db_table = "login_bk_token"

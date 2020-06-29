@@ -4,22 +4,12 @@ from __future__ import absolute_import, unicode_literals
 from celery.schedules import crontab
 from celery.task import task, periodic_task
 
-from blueking.component.client import ComponentClient
 from blueapps.utils.logger import logger_celery as logger
 
-
-from home_application.utils import update_business_db, update_host_db
-from home_application.models import MissionRecord, QueryParams, LoginBkToken
+from home_application.utils import update_business_db, update_host_db, get_client
+from home_application.models import MissionRecord, QueryParams
 
 UNAHTHENTICATED_CODE = 1306000
-try:
-    CLIENT = ComponentClient(
-            app_code="herokingfsaas",
-            app_secret="d9664192-989a-424e-b0e6-5acb404fee2d",
-            common_args={"bk_token": LoginBkToken.objects.first().bk_token}
-        )
-except AttributeError:
-    logger.error("获取bk_token失败，请先登陆应用.")
 
 
 class DataRange(object):
@@ -40,7 +30,8 @@ def get_cc_businesses():
     }
 
     try:
-        result = CLIENT.cc.search_business(kwargs)
+        client = get_client()
+        result = client.cc.search_business(kwargs)
     except Exception as e:
         logger.error("home_application.tasks, 调用client.cc.search_business接口失败{}".format(e))
         return
@@ -71,7 +62,8 @@ def get_cc_hosts(bk_biz_id=None):
     if bk_biz_id:
         kwargs["bk_biz_id"] = bk_biz_id
     try:
-        host_res = CLIENT.cc.search_host(kwargs)
+        client = get_client()
+        host_res = client.cc.search_host(kwargs)
     except Exception as e:
         logger.error("home_application.tasks, 调用client.cc.search_host接口失败{}".format(e))
         return
@@ -85,7 +77,8 @@ def async_handle_execute_script(kwargs, record_id):
     """异步执行脚本任务
     """
     try:
-        result = CLIENT.job.fast_execute_script(kwargs)
+        client = get_client()
+        result = client.job.fast_execute_script(kwargs)
     except Exception:
         logger.error("home_application.tasks, client.job.fast_execute_script接口执行失败 "
                      "kwargs={kwargs}, result={result}".format(kwargs=kwargs, result=result))
@@ -119,7 +112,8 @@ def get_job_status():
             "job_instance_id": item.job_instance_id
         }
         record_id = item.record_id
-        result = CLIENT.job.get_job_instance_status(kwargs)
+        client = get_client()
+        result = client.job.get_job_instance_status(kwargs)
         if result["result"] and result["data"]["is_finished"]:
             status = result["data"]["job_instance"]["status"]
             MissionRecord.objects.filter(pk=record_id).update(status=status)

@@ -1,6 +1,7 @@
 # _*_ coding: utf-8 _*_
 import json
 
+from blueking.component.client import ComponentClient
 from blueking.component.shortcuts import get_client_by_request
 
 from home_application.models import Host, Business, LoginBkToken
@@ -10,12 +11,27 @@ def save_bk_token_to_db(request):
     """把调用第三方接口需要的信息存入数据库中，方便后期调用
     """
     bk_token = request.headers["Cookie"].split(";")[0].split("=")[1]
-    queryset = LoginBkToken.objects.first()
-    if queryset:
-        LoginBkToken.objects.update_or_create(pk=queryset.id, defaults={"bk_token": bk_token})
-    else:
-        LoginBkToken.objects.create(bk_token=bk_token)
+    try:
+        queryset = LoginBkToken.objects.first()
+        if queryset:
+            LoginBkToken.objects.update_or_create(pk=queryset.id, defaults={"bk_token": bk_token})
+        else:
+            LoginBkToken.objects.create(bk_token=bk_token)
+    except Exception:
+        pass
 
+
+def get_client():
+    queryset = LoginBkToken.objects.filter()
+    if queryset.exists():
+        bk_token = queryset.first().bk_token
+    else:
+        bk_token = ""
+    return ComponentClient(
+            app_code="herokingfsaas",
+            app_secret="d9664192-989a-424e-b0e6-5acb404fee2d",
+            common_args={"bk_token": bk_token}
+        )
 
 class MyEncoder(json.JSONEncoder):
     def default(self, obj):

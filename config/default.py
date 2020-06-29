@@ -63,7 +63,7 @@ INSTALLED_APPS += (
 # 自定义中间件
 MIDDLEWARE += (
     'corsheaders.middleware.CorsMiddleware',
-    # 'blueapps.middleware.bkui.middlewares.BkuiPageMiddleware',
+    'blueapps.middleware.bkui.middlewares.BkuiPageMiddleware',
     'blueapps.account.middlewares.LoginRequiredMiddleware'
 )
 

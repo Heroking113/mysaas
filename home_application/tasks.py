@@ -13,8 +13,7 @@ from blueapps.utils.logger import logger_celery as logger
 
 
 from home_application.utils import update_business_db, update_host_db
-from home_application.models import MissionRecord, BkToken
-
+from home_application.models import MissionRecord, BkToken, QueryParams
 
 UNAHTHENTICATED_CODE = 1306000
 CLIENT = ComponentClient(
@@ -29,8 +28,7 @@ class DataRange(object):
     LIMIT = 200
 
 
-# @periodic_task(run_every=timedelta(seconds=10))
-@periodic_task(run_every=crontab())
+@periodic_task(run_every=crontab(minute=30))
 def get_cc_businesses():
     """调用第三方接口，获取业务信息
        每30分钟执行1次
@@ -97,9 +95,12 @@ def async_handle_execute_script(kwargs, record_id):
 
     if result["result"]:
         job_instance_id = result["data"]["job_instance_id"]
-        MissionRecord.objects.filter(pk=record_id).update(job_instance_id=job_instance_id)
-        get_job_status.delay(kwargs["bk_biz_id"], job_instance_id, record_id)
-        return
+        MissionRecord.objects.filter(pk=record_id).update(job_instance_id=job_instance_id, status="2")
+        QueryParams.objects.create(
+            bk_biz_id=kwargs.get("bk_biz_id", ""),
+            job_instance_id=job_instance_id,
+            record_id=record_id
+        )
     else:
         if result["code"] == UNAHTHENTICATED_CODE:
             MissionRecord.objects.filter(pk=record_id).update(status="13")
@@ -110,13 +111,16 @@ def async_handle_execute_script(kwargs, record_id):
                          "kwargs={kwargs}, result={result}".format(kwargs=kwargs, result=result))
 
 
-@task
-def get_job_status(bk_biz_id, job_instance_id, record_id):
-    kwargs = {
-        "bk_biz_id": bk_biz_id,
-        "job_instance_id": job_instance_id
-    }
-    result = CLIENT.job.get_job_instance_status(kwargs)
-    if result["result"] and result["data"]["is_finished"]:
-        status = result["data"]["job_instance"]["status"]
-        MissionRecord.objects.filter(pk=record_id).update(status=status)
+@periodic_task(run_every=crontab())
+def get_job_status():
+    querysets = QueryParams.objects.all()
+    for item in querysets:
+        kwargs = {
+            "bk_biz_id": item.bk_biz_id,
+            "job_instance_id": item.job_instance_id
+        }
+        record_id = item.record_id
+        result = CLIENT.job.get_job_instance_status(kwargs)
+        if result["result"] and result["data"]["is_finished"]:
+            status = result["data"]["job_instance"]["status"]
+            MissionRecord.objects.filter(pk=record_id).update(status=status)

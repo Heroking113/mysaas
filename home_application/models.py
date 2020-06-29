@@ -109,3 +109,14 @@ class BkToken(models.Model):
         db_table = "bk_token"
         verbose_name = "bk_token"
         verbose_name_plural = verbose_name
+
+
+class QueryParams(models.Model):
+    bk_biz_id = models.CharField(verbose_name="业务ID", max_length=16)
+    job_instance_id = models.IntegerField(verbose_name="任务实例ID")
+    record_id = models.IntegerField(verbose_name="记录的ID")
+
+    class Meta:
+        db_table = "query_param"
+        verbose_name = "查询任务的参数"
+        verbose_name_plural = verbose_name

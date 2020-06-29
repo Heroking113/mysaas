@@ -24,9 +24,11 @@ STATIC_URL = '/static/'
 # # # Celery 消息队列设置 Redis
 # # # BROKER_URL = 'redis://localhost:6379/0'
 # BACKEND_URL = 'redis://localhost:6379/1'
-BROKER_URL = 'redis://localhost:6379/2'
+# BROKER_URL = 'redis://localhost:6379/2'
 # Celery backend设置 Redis
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/3'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/3'
+BROKER_URL = 'amqp://'
+CELERY_RESULT_BACKEND = 'amqp://'
 
 # celery时区设置，使用settings中TIME_ZONE同样的时区
 # CELERY_TIMEZONE = TIME_ZONE

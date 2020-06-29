@@ -1,10 +1,6 @@
 # _*_ coding: utf-8 _*_
 from __future__ import absolute_import, unicode_literals
 
-import json
-from datetime import timedelta
-
-from celery import Celery
 from celery.schedules import crontab
 from celery.task import task, periodic_task
 
@@ -13,14 +9,17 @@ from blueapps.utils.logger import logger_celery as logger
 
 
 from home_application.utils import update_business_db, update_host_db
-from home_application.models import MissionRecord, BkToken, QueryParams
+from home_application.models import MissionRecord, QueryParams, LoginBkToken
 
 UNAHTHENTICATED_CODE = 1306000
-CLIENT = ComponentClient(
-        app_code="herokingfsaas",
-        app_secret="d9664192-989a-424e-b0e6-5acb404fee2d",
-        common_args={"bk_token": BkToken.objects.first().bk_token}
-    )
+try:
+    CLIENT = ComponentClient(
+            app_code="herokingfsaas",
+            app_secret="d9664192-989a-424e-b0e6-5acb404fee2d",
+            common_args={"bk_token": LoginBkToken.objects.first().bk_token}
+        )
+except AttributeError:
+    logger.error("获取bk_token失败，请先登陆应用.")
 
 
 class DataRange(object):
@@ -28,7 +27,7 @@ class DataRange(object):
     LIMIT = 200
 
 
-@periodic_task(run_every=crontab(minute=30))
+@periodic_task(run_every=crontab(minute=5))
 def get_cc_businesses():
     """调用第三方接口，获取业务信息
        每30分钟执行1次

@@ -99,15 +99,15 @@ class Host(models.Model):
         verbose_name_plural = verbose_name
 
 
-class BkToken(models.Model):
+class LoginBkToken(models.Model):
     """
     存储celery周期任务中需要的client信息
     """
     bk_token = models.TextField(verbose_name="登录用户的bk_token")
 
     class Meta:
-        db_table = "bk_token"
-        verbose_name = "bk_token"
+        db_table = "login_bk_token"
+        verbose_name = "登录用户的bk_token"
         verbose_name_plural = verbose_name
 
 

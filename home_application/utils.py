@@ -3,18 +3,18 @@ import json
 
 from blueking.component.shortcuts import get_client_by_request
 
-from home_application.models import Host, Business, BkToken
+from home_application.models import Host, Business, LoginBkToken
 
 
 def save_bk_token_to_db(request):
     """把调用第三方接口需要的信息存入数据库中，方便后期调用
     """
     bk_token = request.headers["Cookie"].split(";")[0].split("=")[1]
-    queryset = BkToken.objects.first()
+    queryset = LoginBkToken.objects.first()
     if queryset:
-        BkToken.objects.update_or_create(pk=queryset.id, defaults={"bk_token": bk_token})
+        LoginBkToken.objects.update_or_create(pk=queryset.id, defaults={"bk_token": bk_token})
     else:
-        BkToken.objects.create(bk_token=bk_token)
+        LoginBkToken.objects.create(bk_token=bk_token)
 
 
 class MyEncoder(json.JSONEncoder):

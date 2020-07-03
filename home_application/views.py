@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -8,8 +9,8 @@ from rest_framework.decorators import api_view, action
 
 from blueking.component.shortcuts import get_client_by_request
 
-from home_application.tasks import get_cc_hosts
-from home_application.utils import save_bk_token_to_db
+from home_application.tasks import get_cc_hosts, get_cc_businesses
+from home_application.utils import save_bk_token_to_db, get_bk_token_by_request
 from home_application.decorators import calculate_func_execute_time
 from home_application.models import Host, Business, Mission, MissionRecord
 from home_application.common import CustomResponse, CustomPagination, handle_execute_script
@@ -23,8 +24,13 @@ def index(request):
     """
     前后端分离模式:跳转到前端首页
     """
-    save_bk_token_to_db(request)
+    bk_token = get_bk_token_by_request(request)
+    get_cc_businesses.delay(bk_token)
     return render(request, "index.html")
+
+
+# def deliever_log(request):
+#     return JsonResponse(data={"name": "heroking"})
 
 
 @api_view(['GET'])
@@ -236,6 +242,9 @@ def query_all_info(request):
         }
     }
     """
+    # 异步任务
+    bk_token = get_bk_token_by_request(request)
+    get_cc_businesses.delay(bk_token)
     # 获取主机信息
     host_querysets = Host.objects.all()
     if host_querysets:

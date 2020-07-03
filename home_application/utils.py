@@ -7,6 +7,13 @@ from blueking.component.shortcuts import get_client_by_request
 from home_application.models import Host, Business, LoginBkToken
 
 
+def get_bk_token_by_request(request):
+    li_cookie = request.headers["Cookie"].split(";")
+    for cookie_item in li_cookie:
+        if "bk_token" in cookie_item:
+            return cookie_item.split("=")[1]
+
+
 def save_bk_token_to_db(request):
     """把调用第三方接口需要的信息存入数据库中，方便后期调用
     """
@@ -21,17 +28,13 @@ def save_bk_token_to_db(request):
         pass
 
 
-def get_client():
-    queryset = LoginBkToken.objects.filter()
-    if queryset.exists():
-        bk_token = queryset.first().bk_token
-    else:
-        bk_token = ""
+def get_client(bk_token):
     return ComponentClient(
             app_code="herokingfsaas",
             app_secret="d9664192-989a-424e-b0e6-5acb404fee2d",
             common_args={"bk_token": bk_token}
         )
+
 
 class MyEncoder(json.JSONEncoder):
     def default(self, obj):

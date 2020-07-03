@@ -1,8 +1,9 @@
 # _*_ coding: utf-8 _*_
 from __future__ import absolute_import, unicode_literals
 
-from celery.schedules import crontab
-from celery.task import task, periodic_task
+import time
+
+from celery.task import task
 
 from blueapps.utils.logger import logger_celery as logger
 
@@ -17,8 +18,8 @@ class DataRange(object):
     LIMIT = 200
 
 
-@periodic_task(run_every=crontab(minute=5))
-def get_cc_businesses():
+@task
+def get_cc_businesses(bk_token):
     """调用第三方接口，获取业务信息
        每30分钟执行1次
     """
@@ -28,9 +29,10 @@ def get_cc_businesses():
             "limit": DataRange.LIMIT
         }
     }
-
+    if not bk_token:
+        logger.warn("看起来您未登陆应用，请登陆应用")
     try:
-        client = get_client()
+        client = get_client(bk_token)
         result = client.cc.search_business(kwargs)
     except Exception as e:
         logger.error("home_application.tasks, 调用client.cc.search_business接口失败{}".format(e))
@@ -43,14 +45,14 @@ def get_cc_businesses():
     # 异步执行查询主机信息的任务
     for item in to_business_db_data:
         bk_biz_id = item.get("bk_biz_id", "")
-        get_cc_hosts.delay(bk_biz_id)
+        get_cc_hosts.delay(bk_token, bk_biz_id)
 
     # 更新业务信息表
     update_business_db(to_business_db_data)
 
 
 @task
-def get_cc_hosts(bk_biz_id=None):
+def get_cc_hosts(bk_token, bk_biz_id=None):
     """根据bk_biz_id调用第三方接口，获取对应业务下的主机信息
     """
     kwargs = {
@@ -62,7 +64,7 @@ def get_cc_hosts(bk_biz_id=None):
     if bk_biz_id:
         kwargs["bk_biz_id"] = bk_biz_id
     try:
-        client = get_client()
+        client = get_client(bk_token)
         host_res = client.cc.search_host(kwargs)
     except Exception as e:
         logger.error("home_application.tasks, 调用client.cc.search_host接口失败{}".format(e))
@@ -73,11 +75,10 @@ def get_cc_hosts(bk_biz_id=None):
 
 
 @task
-def async_handle_execute_script(kwargs, record_id):
+def async_handle_execute_script(client, kwargs, record_id):
     """异步执行脚本任务
     """
     try:
-        client = get_client()
         result = client.job.fast_execute_script(kwargs)
     except Exception:
         logger.error("home_application.tasks, client.job.fast_execute_script接口执行失败 "
@@ -88,11 +89,13 @@ def async_handle_execute_script(kwargs, record_id):
     if result["result"]:
         job_instance_id = result["data"]["job_instance_id"]
         MissionRecord.objects.filter(pk=record_id).update(job_instance_id=job_instance_id, status="2")
+        bk_biz_id = kwargs.get("bk_biz_id", "")
         QueryParams.objects.create(
-            bk_biz_id=kwargs.get("bk_biz_id", ""),
+            bk_biz_id=bk_biz_id,
             job_instance_id=job_instance_id,
             record_id=record_id
         )
+        get_job_status.delay(client, record_id, bk_biz_id, job_instance_id)
     else:
         if result["code"] == UNAHTHENTICATED_CODE:
             MissionRecord.objects.filter(pk=record_id).update(status="13")
@@ -103,17 +106,19 @@ def async_handle_execute_script(kwargs, record_id):
                          "kwargs={kwargs}, result={result}".format(kwargs=kwargs, result=result))
 
 
-@periodic_task(run_every=crontab())
-def get_job_status():
-    querysets = QueryParams.objects.all()
-    for item in querysets:
+@task
+def get_job_status(client, record_id, bk_biz_id, job_instance_id):
+    try_num = 0
+    while True and try_num < 5:
         kwargs = {
-            "bk_biz_id": item.bk_biz_id,
-            "job_instance_id": item.job_instance_id
+            "bk_biz_id": bk_biz_id,
+            "job_instance_id": job_instance_id
         }
-        record_id = item.record_id
-        client = get_client()
+        record_id = record_id
         result = client.job.get_job_instance_status(kwargs)
         if result["result"] and result["data"]["is_finished"]:
             status = result["data"]["job_instance"]["status"]
             MissionRecord.objects.filter(pk=record_id).update(status=status)
+            return
+        try_num += 1
+        time.sleep(1)

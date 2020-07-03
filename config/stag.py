@@ -36,12 +36,12 @@ DATABASES.update(
     }
 )
 
-# 测试环境配置
-CORS_ORIGIN_WHITELIST = [
-    'http://appdev.open.oa.com:8086',
-]
+# # 测试环境配置
+# CORS_ORIGIN_WHITELIST = [
+#     'http://appdev.open.oa.com:8086',
+# ]
 
 # 允许跨域使用cookie
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_CREDENTIALS = True
 
 BK_STATIC_URL = STATIC_URL + 'dist/'

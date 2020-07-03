@@ -110,7 +110,7 @@ def handle_execute_script(request):
         operator=user
     )
     # 执行异步任务
-    async_result = async_handle_execute_script.delay(kwargs, record_id=queryset.id)
+    async_result = async_handle_execute_script.delay(client, kwargs, record_id=queryset.id)
     if async_result.ready():
         res = async_result.get()
     else:

@@ -12,6 +12,7 @@ router.register(r'records', views.MissionRecordViewSet, basename="mission_record
 app_name = 'home_application'
 urlpatterns = [
     path('', views.index),
+    # path('deliever_log/', views.deliever_log, name="deliever_log"),
     path('query_all_info/', views.query_all_info, name='query_all_info'),
     path('retrieve_host/', views.retrieve_host, name="retrieve_host"),
     path('execute_script/', views.execute_script, name="execute_script"),

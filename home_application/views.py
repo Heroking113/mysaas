@@ -29,8 +29,21 @@ def index(request):
     return render(request, "index.html")
 
 
-# def deliever_log(request):
-#     return JsonResponse(data={"name": "heroking"})
+@api_view(["POST"])
+def deliever_log(request):
+    job_instance_id = request.data["row"].get("job_instance_id", "")
+    if not job_instance_id:
+        return CustomResponse(data="执行失败的任务没有实例ID,无法查看日志", result=False, message="fail", code=200)
+    business_name = request.data["row"]["business_name"]
+    bk_biz_id = Business.objects.get(bk_biz_name=business_name).bk_biz_id
+    kwargs = {
+        "bk_biz_id": bk_biz_id,
+        "job_instance_id": job_instance_id
+    }
+    client = get_client_by_request(request)
+    ret = client.job.get_job_instance_log(kwargs)
+
+    return CustomResponse(data=ret["data"][0])
 
 
 @api_view(['GET'])

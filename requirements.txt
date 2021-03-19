@@ -7,7 +7,7 @@ chardet==3.0.4
 Django==2.2.6
 django-celery==3.2.1
 django-cors-headers==3.0.2
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 httplib2==0.9.1
 idna==2.8
 kombu==3.0.37
